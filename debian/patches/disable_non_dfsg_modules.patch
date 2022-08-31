@@ -1,0 +1,53 @@
+Description: disable building plugins requiring non-DFSG compliant 3rdparty code
+
+Author: Lu YaNing <dluyaning@gmail.com>
+Last-Update: 2021-12-2
+
+
+Index: qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/CMakeLists.txt
+===================================================================
+--- qtvirtualkeyboard-everywhere-src-6.2.1.orig/src/plugins/CMakeLists.txt
++++ qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/CMakeLists.txt
+@@ -9,15 +9,6 @@ endif()
+ if(QT_FEATURE_hunspell)
+     add_subdirectory(hunspell)
+ endif()
+-if(QT_FEATURE_openwnn)
+-    add_subdirectory(openwnn)
+-endif()
+-if(QT_FEATURE_pinyin AND NOT QT_FEATURE_cerence_xt9)
+-    add_subdirectory(pinyin)
+-endif()
+-if(QT_FEATURE_tcime)
+-    add_subdirectory(tcime)
+-endif()
+ if(QT_FEATURE_myscript)
+     add_subdirectory(myscript)
+ endif()
+Index: qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/openwnn/CMakeLists.txt
+===================================================================
+--- qtvirtualkeyboard-everywhere-src-6.2.1.orig/src/plugins/openwnn/CMakeLists.txt
++++ qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/openwnn/CMakeLists.txt
+@@ -1,4 +1,3 @@
+ # Generated from openwnn.pro.
+ 
+-add_subdirectory(3rdparty/openwnn)
+ add_subdirectory(plugin)
+Index: qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/pinyin/CMakeLists.txt
+===================================================================
+--- qtvirtualkeyboard-everywhere-src-6.2.1.orig/src/plugins/pinyin/CMakeLists.txt
++++ qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/pinyin/CMakeLists.txt
+@@ -1,4 +1,3 @@
+ # Generated from pinyin.pro.
+ 
+-add_subdirectory(3rdparty/pinyin)
+ add_subdirectory(plugin)
+Index: qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/tcime/CMakeLists.txt
+===================================================================
+--- qtvirtualkeyboard-everywhere-src-6.2.1.orig/src/plugins/tcime/CMakeLists.txt
++++ qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/tcime/CMakeLists.txt
+@@ -1,4 +1,3 @@
+ # Generated from tcime.pro.
+ 
+-add_subdirectory(3rdparty/tcime)
+ add_subdirectory(plugin)

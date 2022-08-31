@@ -1,0 +1,4 @@
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/plugins/platforminputcontexts/libqtvirtualkeyboardplugin.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/plugins/virtualkeyboard/libqtvirtualkeyboard_hangul.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/plugins/virtualkeyboard/libqtvirtualkeyboard_hunspell.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/plugins/virtualkeyboard/libqtvirtualkeyboard_thai.so

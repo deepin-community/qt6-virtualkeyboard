@@ -1,0 +1,9 @@
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Settings/libqtquickvirtualkeyboardsettingsplugin.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Settings/plugins.qmltypes
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Settings/qmldir
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Styles/libqtquickvirtualkeyboardstylesplugin.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Styles/plugins.qmltypes
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Styles/qmldir
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/libqtquickvirtualkeyboardplugin.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/plugins.qmltypes
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/qmldir
