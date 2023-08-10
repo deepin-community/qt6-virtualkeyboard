@@ -1,53 +1,58 @@
 Description: disable building plugins requiring non-DFSG compliant 3rdparty code
 
 Author: Lu YaNing <dluyaning@gmail.com>
-Last-Update: 2021-12-2
+Last-Update: 2022-10-14
 
 
-Index: qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/CMakeLists.txt
-===================================================================
---- qtvirtualkeyboard-everywhere-src-6.2.1.orig/src/plugins/CMakeLists.txt
-+++ qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/CMakeLists.txt
-@@ -9,15 +9,6 @@ endif()
- if(QT_FEATURE_hunspell)
+--- a/src/plugins/CMakeLists.txt
++++ b/src/plugins/CMakeLists.txt
+@@ -11,18 +11,6 @@ if(QT_FEATURE_hunspell)
      add_subdirectory(hunspell)
+     list(APPEND plugins_imports QtQuick.VirtualKeyboard.Plugins.Hunspell/auto)
  endif()
 -if(QT_FEATURE_openwnn)
 -    add_subdirectory(openwnn)
+-    list(APPEND plugins_imports QtQuick.VirtualKeyboard.Plugins.OpenWNN/auto)
 -endif()
 -if(QT_FEATURE_pinyin AND NOT QT_FEATURE_cerence_xt9)
 -    add_subdirectory(pinyin)
+-    list(APPEND plugins_imports QtQuick.VirtualKeyboard.Plugins.Pinyin/auto)
 -endif()
 -if(QT_FEATURE_tcime)
 -    add_subdirectory(tcime)
+-    list(APPEND plugins_imports QtQuick.VirtualKeyboard.Plugins.TCIme/auto)
 -endif()
  if(QT_FEATURE_myscript)
      add_subdirectory(myscript)
- endif()
-Index: qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/openwnn/CMakeLists.txt
-===================================================================
---- qtvirtualkeyboard-everywhere-src-6.2.1.orig/src/plugins/openwnn/CMakeLists.txt
-+++ qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/openwnn/CMakeLists.txt
-@@ -1,4 +1,3 @@
- # Generated from openwnn.pro.
- 
+     list(APPEND plugins_imports QtQuick.VirtualKeyboard.Plugins.MyScript/auto)
+diff --git a/src/plugins/openwnn/CMakeLists.txt b/src/plugins/openwnn/CMakeLists.txt
+index 26c2c6a1..668a369e 100644
+--- a/src/plugins/openwnn/CMakeLists.txt
++++ b/src/plugins/openwnn/CMakeLists.txt
+@@ -1,5 +1,3 @@
 -add_subdirectory(3rdparty/openwnn)
- add_subdirectory(plugin)
-Index: qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/pinyin/CMakeLists.txt
-===================================================================
---- qtvirtualkeyboard-everywhere-src-6.2.1.orig/src/plugins/pinyin/CMakeLists.txt
-+++ qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/pinyin/CMakeLists.txt
-@@ -1,4 +1,3 @@
- # Generated from pinyin.pro.
- 
+-
+ #####################################################################
+ ## QtVirtualKeyboardOpenWnnPlugin Plugin:
+ #####################################################################
+diff --git a/src/plugins/pinyin/CMakeLists.txt b/src/plugins/pinyin/CMakeLists.txt
+index ebeb04f4..0ce7b42a 100644
+--- a/src/plugins/pinyin/CMakeLists.txt
++++ b/src/plugins/pinyin/CMakeLists.txt
+@@ -1,5 +1,3 @@
 -add_subdirectory(3rdparty/pinyin)
- add_subdirectory(plugin)
-Index: qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/tcime/CMakeLists.txt
-===================================================================
---- qtvirtualkeyboard-everywhere-src-6.2.1.orig/src/plugins/tcime/CMakeLists.txt
-+++ qtvirtualkeyboard-everywhere-src-6.2.1/src/plugins/tcime/CMakeLists.txt
-@@ -1,4 +1,3 @@
- # Generated from tcime.pro.
- 
+-
+ #####################################################################
+ ## QtVirtualKeyboardPinyinPlugin Plugin:
+ #####################################################################
+diff --git a/src/plugins/tcime/CMakeLists.txt b/src/plugins/tcime/CMakeLists.txt
+index e6d076fe..38d03781 100644
+--- a/src/plugins/tcime/CMakeLists.txt
++++ b/src/plugins/tcime/CMakeLists.txt
+@@ -1,5 +1,3 @@
 -add_subdirectory(3rdparty/tcime)
- add_subdirectory(plugin)
+-
+ #####################################################################
+ ## QtVirtualKeyboardTCImePlugin Plugin:
+ #####################################################################
+

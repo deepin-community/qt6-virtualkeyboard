@@ -1,31 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the Qt Virtual Keyboard module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 or (at your option) any later version
-** approved by the KDE Free Qt Foundation. The licenses are as published by
-** the Free Software Foundation and appearing in the file LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2016 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #include <QtVirtualKeyboard/qvirtualkeyboardinputcontext.h>
 #include <QtVirtualKeyboard/private/qvirtualkeyboardinputcontext_p.h>
@@ -44,7 +18,7 @@ using namespace QtVirtualKeyboard;
     \qmltype InputContext
     \instantiates QVirtualKeyboardInputContext
     \inqmlmodule QtQuick.VirtualKeyboard
-    \ingroup qtvirtualkeyboard-qml
+    \ingroup qtvirtualkeyboard-internal-qml
     \brief Provides access to an input context.
 
     The InputContext can be accessed as singleton instance.
@@ -53,6 +27,7 @@ using namespace QtVirtualKeyboard;
 /*!
     \class QVirtualKeyboardInputContext
     \inmodule QtVirtualKeyboard
+    \ingroup qtvirtualkeyboard-cpp-for-devs
     \brief Provides access to an input context.
 */
 
@@ -132,7 +107,7 @@ void QVirtualKeyboardInputContext::setPreeditText(const QString &text, QList<QIn
         if (!d->testAttribute(attributes, QInputMethodEvent::TextFormat)) {
             QTextCharFormat textFormat;
             textFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-            attributes.append(QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, 0, text.length(), textFormat));
+            attributes.append(QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, 0, text.size(), textFormat));
         }
     } else if (d->_forceCursorPosition != -1) {
         d->addSelectionAttribute(attributes);

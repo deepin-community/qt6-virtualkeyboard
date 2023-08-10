@@ -1,0 +1,9 @@
+Document: qt6-virtualkeyboard-manual
+Title: Qt 6 virtual keyboard
+Author: The Qt Company Ltd
+Abstract: This is the HTML documentation for Qt 6 Qt virtual keyboard
+Section: Programming/C++
+
+Format: HTML
+Index: /usr/share/doc/qt6-virtualkeyboard-doc-html/html/qtvirtualkeyboard/qtvirtualkeyboard-index.html
+Files: /usr/share/doc/qt6-virtualkeyboard-doc-html/html/qtvirtualkeyboard/*.html

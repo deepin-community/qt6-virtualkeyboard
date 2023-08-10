@@ -1,31 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2018 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the Qt Virtual Keyboard module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 or (at your option) any later version
-** approved by the KDE Free Qt Foundation. The licenses are as published by
-** the Free Software Foundation and appearing in the file LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2018 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #include <QtVirtualKeyboard/private/qvirtualkeyboardinputcontext_p.h>
 #include <QtVirtualKeyboard/private/platforminputcontext_p.h>
@@ -167,6 +141,8 @@ QString QVirtualKeyboardInputContextPrivate::locale() const
 void QVirtualKeyboardInputContextPrivate::setLocale(const QString &locale)
 {
     VIRTUALKEYBOARD_DEBUG() << "QVirtualKeyboardInputContextPrivate::setLocale():" << locale;
+    if (!platformInputContext)
+        return;
     QLocale newLocale(locale);
     if (newLocale != platformInputContext->locale()) {
         platformInputContext->setLocale(newLocale);
@@ -188,11 +164,6 @@ ShiftHandler *QVirtualKeyboardInputContextPrivate::shiftHandler() const
 ShadowInputContext *QVirtualKeyboardInputContextPrivate::shadow() const
 {
     return const_cast<ShadowInputContext *>(&_shadow);
-}
-
-QStringList QVirtualKeyboardInputContextPrivate::inputMethods() const
-{
-    return platformInputContext ? platformInputContext->inputMethods() : QStringList();
 }
 
 void QVirtualKeyboardInputContextPrivate::setKeyboardObserver(QVirtualKeyboardObserver *keyboardObserver)
@@ -254,7 +225,7 @@ void QVirtualKeyboardInputContextPrivate::forceCursorPosition(int anchorPosition
         forceAnchorPosition = -1;
         _forceCursorPosition = cursorPosition;
         if (cursorPosition > this->cursorPosition)
-            _forceCursorPosition += preeditText.length();
+            _forceCursorPosition += preeditText.size();
         commit();
     } else {
         forceAnchorPosition = anchorPosition;
@@ -531,13 +502,13 @@ void QVirtualKeyboardInputContextPrivate::invokeAction(QInputMethod::Action acti
             if (inputEngine->clickPreeditText(cursorPosition))
                 break;
 
-            bool reselect = !inputMethodHints.testFlag(Qt::ImhNoPredictiveText) && selectedText.isEmpty() && cursorPosition < preeditText.length();
+            bool reselect = !inputMethodHints.testFlag(Qt::ImhNoPredictiveText) && selectedText.isEmpty() && cursorPosition < preeditText.size();
             if (reselect) {
                 QVirtualKeyboardScopedState reselectState(this, State::Reselect);
                 _forceCursorPosition = this->cursorPosition + cursorPosition;
                 commit();
                 inputEngine->reselect(this->cursorPosition, QVirtualKeyboardInputEngine::ReselectFlag::WordBeforeCursor);
-            } else if (!preeditText.isEmpty() && cursorPosition == preeditText.length()) {
+            } else if (!preeditText.isEmpty() && cursorPosition == preeditText.size()) {
                 commit();
             }
         }
@@ -631,7 +602,7 @@ void QVirtualKeyboardInputContextPrivate::addSelectionAttribute(QList<QInputMeth
 
 bool QVirtualKeyboardInputContextPrivate::testAttribute(const QList<QInputMethodEvent::Attribute> &attributes, QInputMethodEvent::AttributeType attributeType) const
 {
-    for (const QInputMethodEvent::Attribute &attribute : qAsConst(attributes)) {
+    for (const QInputMethodEvent::Attribute &attribute : std::as_const(attributes)) {
         if (attribute.type == attributeType)
             return true;
     }
@@ -640,7 +611,7 @@ bool QVirtualKeyboardInputContextPrivate::testAttribute(const QList<QInputMethod
 
 int QVirtualKeyboardInputContextPrivate::findAttribute(const QList<QInputMethodEvent::Attribute> &attributes, QInputMethodEvent::AttributeType attributeType) const
 {
-    const int count = attributes.count();
+    const int count = attributes.size();
     for (int i = 0; i < count; ++i) {
         if (attributes.at(i).type == attributeType)
             return i;
