@@ -1,1 +1,1 @@
-#include "../../src/plugins/hunspell/hunspellinputmethod/qhunspellinputmethod_global.h"
+#include "../../src/plugins/hunspell/module/qhunspellinputmethod_global.h"

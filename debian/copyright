@@ -20,13 +20,13 @@ Files-Excluded: src/plugins/tcime/3rdparty
 # libraries.
 
 Files: *
-Copyright: 2016-2021 The Qt Company Ltd.
-License: GPL-3+
+Copyright: 2016-2022 The Qt Company Ltd.
+License: GPL-3
 
 Files: debian/*
-Copyright: 2021 Patrick Franz <deltaone@debian.org>,
+Copyright: 2021-2022 Patrick Franz <deltaone@debian.org>,
            2021 Lu YaNing <dluyaning@gmail.com>
-License: GPL-3+
+License: GPL-3
 
 Files: *.qdoc
        src/virtualkeyboard/doc/snippets/qtvirtualkeyboard-custom-language-popup.qml
@@ -40,39 +40,34 @@ Files: tests/auto/layoutfilesystem/data/layouts/en_GB/main.qml
        tests/auto/shared/layouttesthelper.cpp
        tests/auto/shared/layouttesthelper.h
 Copyright: 2016 Pelagicore AB
-License: GPL-3+
+License: GPL-3
 
 Files: tests/auto/styles/data/QtQuick/VirtualKeyboard/Styles/test/style.qml
        tests/auto/styles/data/tst_styles.qml
        tests/auto/styles/tst_styles.cpp
 Copyright: 2016 Jeremy Katz
-License: GPL-3+
+License: GPL-3
 
 Files: src/plugins/myscript/plugin/myscriptinputmethod*
 Copyright: 2017 MyScript
            2017 Klarälvdalens Datakonsult AB (KDAB)
            2017 The Qt Company Ltd.
-License: GPL-3+
+License: GPL-3
 
 Files: conanfile.py
 Copyright: 2021 The Qt Company Ltd.
 License: GPL-3 with Qt-1.0 exception
 
-Files: config.tests/hunspell/main.cpp
-       src/virtualkeyboard/qvirtualkeyboard_global_p.h
-Copyright: 2020 The Qt Company Ltd.
-License: LGPL-3 or GPL-2
-
-License: GPL-3+
+License: GPL-3
  This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License version 3 or (at
- your option) any later version approved by the KDE Free Qt Foundation.
- The licenses are as published by the Free Software Foundation.
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
  .
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- General Public License for more details.
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
  .
  On Debian systems, the complete text of the GNU General Public
  License version 3 can be found in /usr/share/common-licenses/GPL-3.
@@ -120,29 +115,3 @@ License: GPL-3 with Qt-1.0 exception
  source code to this application, excluding the source code of the
  independent modules, but including any changes you have made to this
  application, under the terms of this license.
-
-License: LGPL-3
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License version 3
- as published by the Free Software Foundation.
- .
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
- .
- On Debian systems, the complete text of the GNU Lesser General Public
- License version 3 can be found in /usr/share/common-licenses/LGPL-3.
-
-License: GPL-2
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License version 2 as
- published by the Free Software Foundation.
- .
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- .
- On Debian systems, the complete text of the GNU General Public
- License version 2 can be found in /usr/share/common-licenses/GPL-2.
