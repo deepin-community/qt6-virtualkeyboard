@@ -9,6 +9,7 @@ import QtQuick.VirtualKeyboard.Settings
 
 Item {
     id: control
+    property alias textEdit: shadowInput
 
     enabled: keyboard.active && VirtualKeyboardSettings.fullScreenMode
 
@@ -68,7 +69,8 @@ Item {
                     onCursorPositionChanged: {
                         cursorSyncTimer.restart()
                         blinkStatus = true
-                        cursorTimer.restart()
+                        if (cursorTimer.running)
+                            cursorTimer.restart()
                     }
                     onSelectionStartChanged: cursorSyncTimer.restart()
                     onSelectionEndChanged: cursorSyncTimer.restart()
@@ -97,7 +99,7 @@ Item {
                         id: cursorTimer
                         interval: Qt.styleHints.cursorFlashTime / 2
                         repeat: true
-                        running: true
+                        running: control.visible
                         onTriggered: shadowInput.blinkStatus = !shadowInput.blinkStatus
                     }
                 }
@@ -105,11 +107,23 @@ Item {
         }
     }
 
-    Binding {
+    Component.onCompleted: {
+        if (VirtualKeyboardSettings.fullScreenMode) {
+            InputContext.priv.shadow.inputItem = shadowInput
+        }
+    }
+    Connections {
+        target: VirtualKeyboardSettings
+        function onFullScreenModeChanged() {
+            InputContext.priv.shadow.inputItem = VirtualKeyboardSettings.fullScreenMode ? shadowInput : null
+        }
+    }
+    Connections {
         target: InputContext.priv.shadow
-        property: "inputItem"
-        value: shadowInput
-        when: VirtualKeyboardSettings.fullScreenMode
-        restoreMode: Binding.RestoreBinding
+        function onInputItemChanged() {
+            cursorSyncTimer.stop()
+            if (!InputContext.priv.shadow.inputItem)
+                shadowInput.clear()
+        }
     }
 }

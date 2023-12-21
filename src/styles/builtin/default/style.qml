@@ -120,7 +120,7 @@ KeyboardStyle {
             }
             states: [
                 State {
-                    when: control.smallText === "\u2699"
+                    when: control.smallText === "\u2699" && control.smallTextVisible
                     PropertyChanges {
                         target: keySmallText
                         visible: false
@@ -1181,11 +1181,11 @@ KeyboardStyle {
             smooth: false
             source: {
                 switch (keyboardFunction) {
-                case QtVirtualKeyboard.HideInputPanel:
+                case QtVirtualKeyboard.KeyboardFunction.HideInputPanel:
                     return resourcePrefix + "images/hidekeyboard-fff.svg"
-                case QtVirtualKeyboard.ChangeLanguage:
+                case QtVirtualKeyboard.KeyboardFunction.ChangeLanguage:
                     return resourcePrefix + "images/globe-fff.svg"
-                case QtVirtualKeyboard.ToggleHandwritingMode:
+                case QtVirtualKeyboard.KeyboardFunction.ToggleHandwritingMode:
                     return resourcePrefix + (keyboard.handwritingMode ? "images/textmode-fff.svg" : "images/handwriting-fff.svg")
                 }
             }

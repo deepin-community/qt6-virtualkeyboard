@@ -1,3 +1,6 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
 #####################################################################
 ## QtVirtualKeyboardCerenceHwrPlugin Plugin:
 #####################################################################
@@ -5,6 +8,7 @@
 qt_internal_add_qml_module(qtvkbcerencehwrplugin
     URI "QtQuick.VirtualKeyboard.Plugins.Cerence.HWR"
     VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2
     PLUGIN_TARGET qtvkbcerencehwrplugin
     NO_PLUGIN_OPTIONAL
     DEPENDENCIES
@@ -61,7 +65,7 @@ endif()
 
 if (QT_FEATURE_vkb_lang_cs_CZ)
     list(APPEND qmake_virtualkeyboard_cerence_hwr_layouts_resource_files
-        "${VKB_LAYOUTS_BASE}/cs_CZ/handwriting.qml"
+        "${VKB_LAYOUTS_BASE}/cs_CZ/handwriting.fallback"
     )
 endif()
 
@@ -133,13 +137,13 @@ endif()
 
 if (QT_FEATURE_vkb_lang_hr_HR)
     list(APPEND qmake_virtualkeyboard_cerence_hwr_layouts_resource_files
-        "${VKB_LAYOUTS_BASE}/hr_HR/handwriting.qml"
+        "${VKB_LAYOUTS_BASE}/hr_HR/handwriting.fallback"
     )
 endif()
 
 if (QT_FEATURE_vkb_lang_hu_HU)
     list(APPEND qmake_virtualkeyboard_cerence_hwr_layouts_resource_files
-        "${VKB_LAYOUTS_BASE}/hu_HU/handwriting.qml"
+        "${VKB_LAYOUTS_BASE}/hu_HU/handwriting.fallback"
     )
 endif()
 
@@ -193,7 +197,7 @@ endif()
 
 if (QT_FEATURE_vkb_lang_ro_RO)
     list(APPEND qmake_virtualkeyboard_cerence_hwr_layouts_resource_files
-        "${VKB_LAYOUTS_BASE}/ro_RO/handwriting.qml"
+        "${VKB_LAYOUTS_BASE}/ro_RO/handwriting.fallback"
     )
 endif()
 

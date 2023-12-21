@@ -1,5 +1,5 @@
 // Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
 import QtQuick
 // Deliberately imported after QtQuick to avoid missing restoreMode property in Binding. Fix in Qt 6.
@@ -85,8 +85,6 @@ Item {
             y: yPositionWhenHidden
             x: 0
             width: parent.width
-
-            keyboard.shadowInputControl.height: parent.height - keyboard.height
 
             property real yPositionWhenHidden: parent.height
 

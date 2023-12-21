@@ -19,7 +19,6 @@ usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboard/qvirtualkeyboarddictiona
 usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboard/qvirtualkeyboarddictionarymanager.h
 usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboard/qvirtualkeyboardinputcontext.h
 usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboard/qvirtualkeyboardinputengine.h
-usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboard/qvirtualkeyboardnamespace.h
 usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboard/qvirtualkeyboardobserver.h
 usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboard/qvirtualkeyboardselectionlistmodel.h
 usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboard/qvirtualkeyboardtrace.h
@@ -46,11 +45,11 @@ usr/lib/${DEB_HOST_MULTIARCH}/cmake/Qt6VirtualKeyboard/Qt6VirtualKeyboardTargets
 usr/lib/${DEB_HOST_MULTIARCH}/cmake/Qt6VirtualKeyboard/Qt6VirtualKeyboardVersionlessTargets.cmake
 usr/lib/${DEB_HOST_MULTIARCH}/libQt6VirtualKeyboard.prl
 usr/lib/${DEB_HOST_MULTIARCH}/libQt6VirtualKeyboard.so
-usr/lib/${DEB_HOST_MULTIARCH}/metatypes/qt6hunspellinputmethod_none_metatypes.json
-usr/lib/${DEB_HOST_MULTIARCH}/metatypes/qt6virtualkeyboard_none_metatypes.json
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/Qt6HunspellInputMethod.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/Qt6VirtualKeyboard.pc
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/metatypes/qt6hunspellinputmethod_none_metatypes.json
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/metatypes/qt6virtualkeyboard_none_metatypes.json
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/mkspecs/modules/qt_lib_hunspellinputmethod.pri
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/mkspecs/modules/qt_lib_virtualkeyboard.pri
-usr/share/qt6/modules/HunspellInputMethod.json
-usr/share/qt6/modules/VirtualKeyboard.json
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/modules/HunspellInputMethod.json
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/modules/VirtualKeyboard.json
