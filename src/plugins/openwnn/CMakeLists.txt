@@ -1,3 +1,6 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
 add_subdirectory(3rdparty/openwnn)
 
 #####################################################################
@@ -7,6 +10,7 @@ add_subdirectory(3rdparty/openwnn)
 qt_internal_add_qml_module(qtvkbopenwnnplugin
     URI "QtQuick.VirtualKeyboard.Plugins.OpenWNN"
     VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2
     PLUGIN_TARGET qtvkbopenwnnplugin
     NO_PLUGIN_OPTIONAL
     DEPENDENCIES

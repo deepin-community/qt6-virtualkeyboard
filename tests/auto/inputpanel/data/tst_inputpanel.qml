@@ -54,12 +54,19 @@ Rectangle {
         }
 
         function prepareTest(data, skipIfFail) {
+            // Skip hwr tests early if handwriting feature is not available
+            if (data !== undefined && data.hasOwnProperty("initHwrMode") && data.initHwrMode) {
+                if (!inputPanel.isHandwritingFeatureAvailable())
+                    skip("Handwriting feature not available")
+            }
+
             inputPanel.setWclAutoHideDelay(data !== undefined && data.hasOwnProperty("wclAutoHideDelay") ? data.wclAutoHideDelay : 5000)
             inputPanel.setWclAlwaysVisible(data !== undefined && data.hasOwnProperty("wclAlwaysVisible") && data.wclAlwaysVisible)
             inputPanel.setWclAutoCommitWord(data !== undefined && data.hasOwnProperty("wclAutoCommitWord") && data.wclAutoCommitWord)
             inputPanel.setFullScreenMode(data !== undefined && data.hasOwnProperty("fullScreenMode") && data.fullScreenMode)
             inputPanel.setExternalLanguageSwitchEnabled(data !== undefined && data.hasOwnProperty("externalLanguageSwitchEnabled") && data.externalLanguageSwitchEnabled)
             inputPanel.setLayoutMirroring(data !== undefined && data.hasOwnProperty("layoutMirroring") && data.layoutMirroring)
+            inputPanel.setVisibleFunctionKeys(data !== undefined && data.hasOwnProperty("visibleFunctionKeys") ? data.visibleFunctionKeys : ["All"])
 
             var window = container.Window.window
             verify(window)
@@ -68,7 +75,6 @@ Rectangle {
             tryCompare(window, "active", true)
 
             container.forceActiveFocus()
-            waitForRendering(container)
             if (data !== undefined && data.hasOwnProperty("initText")) {
                 textInput.text = data.initText
                 textInput.cursorPosition = data.hasOwnProperty("initCursorPosition") ? data.initCursorPosition : textInput.text.length
@@ -83,7 +89,6 @@ Rectangle {
             handwritingInputPanel.available = false
             inputPanel.setHandwritingMode(false)
             textInput.forceActiveFocus()
-            waitForRendering(inputPanel)
             var activeLocales = data !== undefined && data.hasOwnProperty("activeLocales") ? data.activeLocales : []
             inputPanel.setActiveLocales(activeLocales)
             var locale = data !== undefined && data.hasOwnProperty("initLocale") ? data.initLocale : "en_GB"
@@ -121,65 +126,65 @@ Rectangle {
         function test_versionCheck_data() {
             return [
                 // Note: Add new import versions here
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard 1.0; \
                         Item {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard 1.1; \
                         Item {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard 1.2; \
                         Item {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard 1.3; \
                         Item {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard 2.0; \
                         Item {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard 2.1; \
                         Item {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Styles; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Styles 1.0; \
                         KeyboardStyle {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Styles; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Styles 1.1; \
                         KeyboardStyle {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Styles; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Styles 1.2; \
                         KeyboardStyle {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Styles; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Styles 1.3; \
                         KeyboardStyle {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Styles; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Styles 2.0; \
                         KeyboardStyle {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Styles; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Styles 2.1; \
                         KeyboardStyle {}" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Settings; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Settings 1.0; \
                         Item { property var styleName: VirtualKeyboardSettings.styleName }" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Settings; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Settings 1.1; \
                         Item { property var styleName: VirtualKeyboardSettings.styleName }" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Settings; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Settings 1.2; \
                         Item { property var styleName: VirtualKeyboardSettings.styleName }" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Settings; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Settings 2.0; \
                         Item { property var styleName: VirtualKeyboardSettings.styleName; \
                                property var locale: VirtualKeyboardSettings.locale; \
                                property var availableLocales: VirtualKeyboardSettings.availableLocales; \
                                property var activeLocales: VirtualKeyboardSettings.activeLocales }" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Settings; \
+                { qml: "import QtQuick 2.0; \
+                        import QtQuick.VirtualKeyboard.Settings 2.1; \
                         Item { property var styleName: VirtualKeyboardSettings.styleName; \
                                property var locale: VirtualKeyboardSettings.locale; \
                                property var availableLocales: VirtualKeyboardSettings.availableLocales; \
                                property var activeLocales: VirtualKeyboardSettings.activeLocales }" },
-                { qml: "import QtQuick; \
-                        import QtQuick.VirtualKeyboard.Settings; \
+                { qml: "import QtQuick 2.7; \
+                        import QtQuick.VirtualKeyboard.Settings 2.2; \
                         Item { property var styleName: VirtualKeyboardSettings.styleName; \
                                property var locale: VirtualKeyboardSettings.locale; \
                                property var availableLocales: VirtualKeyboardSettings.availableLocales; \
@@ -188,6 +193,20 @@ Rectangle {
                                property var wclAlwaysVisible: VirtualKeyboardSettings.wordCandidateList.alwaysVisible; \
                                property var wclAutoCommitWord: VirtualKeyboardSettings.wordCandidateList.autoCommitWord; \
                                property var fullScreenMode: VirtualKeyboardSettings.fullScreenMode; }" },
+                // without versions
+                { qml: "import QtQuick; \
+                        import QtQuick.VirtualKeyboard; \
+                        import QtQuick.VirtualKeyboard.Styles; \
+                        import QtQuick.VirtualKeyboard.Settings; \
+                        import QtQuick.VirtualKeyboard.Plugins; \
+                        Item {}" },
+                // virtual keyboard 5.15
+                { qml: "import QtQuick 2.7; \
+                        import QtQuick.VirtualKeyboard 2.3; \
+                        import QtQuick.VirtualKeyboard.Styles 2.1; \
+                        import QtQuick.VirtualKeyboard.Settings 2.2; \
+                        import QtQuick.VirtualKeyboard.Plugins 2.3; \
+                        Item {}" },
             ]
         }
 
@@ -373,7 +392,6 @@ Rectangle {
                 { initLocale: "pt_BR", initInputMethodHints: Qt.ImhNoPredictiveText, inputSequence: "ol\u00E1", outputText: "Ol\u00E1" },
                 { initLocale: "pt_PT", initInputMethodHints: Qt.ImhNoPredictiveText, inputSequence: "ol\u00E1", outputText: "Ol\u00E1" },
                 { initLocale: "ru_RU", initInputMethodHints: Qt.ImhNoPredictiveText, inputSequence: "\u043F\u0440\u0438\u0432\u0435\u0442", outputText: "\u041F\u0440\u0438\u0432\u0435\u0442" },
-                { initLocale: "ru_RU", initInputMethodHints: Qt.ImhNoPredictiveText, initInputMode: "Latin", inputSequence: "hello", outputText: "Hello" },
                 { initLocale: "sr_SP", initInputMethodHints: Qt.ImhNoPredictiveText, inputSequence: "\u0437\u0434\u0440\u0430\u0432\u043E", outputText: "\u0417\u0434\u0440\u0430\u0432\u043E" },
                 { initLocale: "sv_SE", initInputMethodHints: Qt.ImhNoPredictiveText, inputSequence: "hall\u00E5", outputText: "Hall\u00E5" },
                 { initLocale: "sq_AL", initInputMethodHints: Qt.ImhNoPredictiveText, inputSequence: "përshëndetje", outputText: "Përshëndetje" },
@@ -394,7 +412,6 @@ Rectangle {
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
         }
 
@@ -423,7 +440,6 @@ Rectangle {
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
         }
 
@@ -455,7 +471,6 @@ Rectangle {
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
         }
 
@@ -501,7 +516,6 @@ Rectangle {
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
         }
 
@@ -606,16 +620,13 @@ Rectangle {
 
             inputPanel.setStyle("retro")
             inputPanel.styleSpy.wait()
-            waitForRendering(inputPanel)
 
             inputPanel.setStyle("default")
             inputPanel.styleSpy.wait()
-            waitForRendering(inputPanel)
 
             compare(inputPanel.styleSpy.count, 2)
 
             inputPanel.setStyle(origStyle)
-            waitForRendering(inputPanel)
         }
 
         function test_soundEffects() {
@@ -635,9 +646,9 @@ Rectangle {
 
         function test_navigationKeyInputSequence_data() {
             return [
-                { initInputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase, inputSequence: "\u00E1\u017C", outputText: "\u00E1\u017C" },
-                { initInputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase, inputSequence: "~123qwe", outputText: "~123qwe" },
-                { initInputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase, inputSequence: [ Qt.Key_Shift, Qt.Key_V, Qt.Key_K, Qt.Key_B, Qt.Key_Return ], outputText: "VKB\n" },
+                { initialKey: Qt.Key_Space, initInputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase, inputSequence: "\u00E1\u017C", outputText: "\u00E1\u017C" },
+                { initialKey: Qt.Key_Space, initInputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase, inputSequence: "~123qwe", outputText: "~123qwe" },
+                { initialKey: Qt.Key_Space, initInputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase, inputSequence: [ Qt.Key_Shift, Qt.Key_Shift, Qt.Key_V, Qt.Key_K, Qt.Key_B, Qt.Key_Return ], outputText: "VKB\n" },
             ]
         }
 
@@ -648,20 +659,20 @@ Rectangle {
                 skip("Arrow key navigation not enabled")
 
             verify(inputPanel.naviationHighlight.visible)
+            verify(inputPanel.navigateToKey(data.initialKey))
 
             for (var inputIndex in data.inputSequence) {
                 verify(inputPanel.navigationKeyClick(data.inputSequence[inputIndex]))
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
         }
 
         function test_navigationCursorWrap_data() {
             return [
-                { initialKey: Qt.Key_Q, navigationKey: Qt.Key_Up, navigationKeyRepeat: 4 },
-                { initialKey: Qt.Key_Q, navigationKey: Qt.Key_Down, navigationKeyRepeat: 4 },
+                { initialKey: Qt.Key_W, navigationKey: Qt.Key_Up, navigationKeyRepeat: 4 },
+                { initialKey: Qt.Key_W, navigationKey: Qt.Key_Down, navigationKeyRepeat: 4 },
                 { initialKey: Qt.Key_T, navigationKey: Qt.Key_Up, navigationKeyRepeat: 4 },
                 { initialKey: Qt.Key_T, navigationKey: Qt.Key_Down, navigationKeyRepeat: 4 },
                 { initialKey: Qt.Key_Backspace, navigationKey: Qt.Key_Up, navigationKeyRepeat: 4 },
@@ -694,7 +705,7 @@ Rectangle {
                 }
             }
 
-            verify(inputPanel.keyboardInputArea.initialKey === initialKeyObj)
+            compare(inputPanel.keyboardInputArea.initialKey, initialKeyObj)
         }
 
         function test_navigationCursorAndWordCandidateView() {
@@ -734,7 +745,10 @@ Rectangle {
 
             // Move focus to the next item in the list
             var previousHighlightIndex = inputPanel.wordCandidateView.currentIndex
+            inputPanel.wordCandidateListCurrentIndexSpy.clear()
             inputPanel.emulateNavigationKeyClick(Qt.Key_Right)
+            inputPanel.wordCandidateListCurrentIndexSpy.wait()
+            compare(inputPanel.wordCandidateListCurrentIndexSpy.count, 1)
             compare(inputPanel.wordCandidateView.currentIndex, previousHighlightIndex + 1)
 
             // Move focus to previously focused key on keyboard and back
@@ -750,7 +764,10 @@ Rectangle {
             for (previousHighlightIndex = inputPanel.wordCandidateView.currentIndex;
                  previousHighlightIndex < inputPanel.wordCandidateView.count - 1;
                  previousHighlightIndex++) {
+                inputPanel.wordCandidateListCurrentIndexSpy.clear()
                 inputPanel.emulateNavigationKeyClick(Qt.Key_Right)
+                inputPanel.wordCandidateListCurrentIndexSpy.wait()
+                compare(inputPanel.wordCandidateListCurrentIndexSpy.count, 1)
                 compare(inputPanel.wordCandidateView.currentIndex, previousHighlightIndex + 1)
             }
 
@@ -810,7 +827,7 @@ Rectangle {
 
             var keysTraversed = []
             do {
-                verify(keysTraversed.indexOf(inputPanel.keyboardInputArea.initialKey) === -1)
+                compare(keysTraversed.indexOf(inputPanel.keyboardInputArea.initialKey), -1)
                 var currentKey = inputPanel.keyboardInputArea.initialKey
                 keysTraversed.push(currentKey)
                 inputPanel.emulateNavigationKeyClick(Qt.Key_Right)
@@ -845,7 +862,6 @@ Rectangle {
             for (var inputIndex in data.inputSequence) {
                 verify(inputPanel.virtualKeyClick(data.inputSequence[inputIndex]))
             }
-            waitForRendering(inputPanel)
 
             if (inputPanel.wordCandidateListVisibleHint) {
                 if (data.hasOwnProperty("expectedSuggestion")) {
@@ -891,7 +907,6 @@ Rectangle {
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             if (!inputPanel.wordCandidateListVisibleHint && textInput.text !== data.outputText)
                 expectFail("", "Prediction/spell correction not enabled")
             compare(textInput.text, data.outputText)
@@ -935,7 +950,6 @@ Rectangle {
             for (var inputIndex in data.inputSequence) {
                 verify(inputPanel.virtualKeyClick(data.inputSequence[inputIndex]))
             }
-            waitForRendering(inputPanel)
 
             for (var candidateIndex in data.expectedCandidates) {
                 verify(inputPanel.selectionListSearchSuggestion(data.expectedCandidates[candidateIndex]))
@@ -997,7 +1011,6 @@ Rectangle {
                 else
                     verify(inputPanel.virtualKeyClick(key))
             }
-            waitForRendering(inputPanel)
 
             if (data.expectedCandidates) {
                 for (var candidateIndex in data.expectedCandidates) {
@@ -1077,8 +1090,6 @@ Rectangle {
                         verify(inputPanel.virtualKeyClick(inputSequence[charIndex]))
                     }
 
-                    waitForRendering(inputPanel)
-
                     if (data.expectedCandidates && inputIndex < data.expectedCandidates.length && data.expectedCandidates[inputIndex].length > 0) {
                         verify(inputPanel.selectionListSearchSuggestion(data.expectedCandidates[inputIndex]))
                         verify(inputPanel.selectionListSelectCurrentItem())
@@ -1087,7 +1098,6 @@ Rectangle {
                     verify(inputPanel.virtualKeyClick(data.inputSequence[inputIndex]))
                 }
             }
-            waitForRendering(inputPanel)
 
             if (!Array.isArray(data.inputSequence) && data.expectedCandidates) {
                 verify(inputPanel.selectionListSearchSuggestion(data.expectedCandidates))
@@ -1160,12 +1170,10 @@ Rectangle {
             // Remove Jamos one by one.
             // The number of removed characters must match to the number of Jamos entered.
             for (inputIndex = data.inputSequence.length - 1; inputIndex >= 0; inputIndex--) {
-                waitForRendering(inputPanel)
                 compare(Utils.toUnicodeHex(textInputContents()), Utils.toUnicodeHex(intermediateResult.pop()))
                 inputPanel.virtualKeyClick(Qt.Key_Backspace)
             }
 
-            waitForRendering(inputPanel)
             compare(Utils.toUnicodeHex(textInputContents()),
                     Utils.toUnicodeHex(data.initText !== undefined ? data.initText : ""))
         }
@@ -1210,7 +1218,6 @@ Rectangle {
                 verify(inputPanel.virtualKeyClick(data.inputSequence[inputIndex]))
             }
 
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
 
             if (data.hasOwnProperty("expectedCursorPosition"))
@@ -1240,7 +1247,6 @@ Rectangle {
             for (var inputIndex in data.inputSequence) {
                 verify(inputPanel.virtualKeyClick(data.inputSequence[inputIndex]))
             }
-            waitForRendering(inputPanel)
 
             for (var candidateIndex in data.expectedCandidates) {
                 verify(inputPanel.selectionListSearchSuggestion(data.expectedCandidates[candidateIndex]))
@@ -1295,7 +1301,6 @@ Rectangle {
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
         }
 
@@ -1339,7 +1344,6 @@ Rectangle {
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
         }
 
@@ -1385,7 +1389,6 @@ Rectangle {
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
         }
 
@@ -1419,12 +1422,10 @@ Rectangle {
             }
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
 
             var inputMode = inputPanel.inputMode
             verify(inputPanel.virtualKeyClick(Qt.Key_Mode_switch))
-            waitForRendering(inputPanel)
             compare(inputPanel.inputMode !== inputMode, data.modeSwitchAllowed)
         }
 
@@ -1448,7 +1449,6 @@ Rectangle {
             for (var inputIndex in data.inputSequence) {
                 verify(inputPanel.emulateHandwriting(data.inputSequence.charAt(inputIndex), true))
             }
-            waitForRendering(inputPanel)
 
             if (inputPanel.wordCandidateListVisibleHint) {
                 if (data.hasOwnProperty("expectedSuggestion")) {
@@ -1627,7 +1627,6 @@ Rectangle {
             for (var inputIndex in data.inputSequence) {
                 verify(handwritingInputPanel.emulateHandwriting(data.inputSequence.charAt(inputIndex), true))
             }
-            waitForRendering(handwritingInputPanel)
 
             if (data.popupFlipped) {
                 verify(handwritingInputPanel.wordCandidatePopupList.y + handwritingInputPanel.wordCandidatePopupList.height <= Qt.inputMethod.cursorRectangle.y)
@@ -1660,7 +1659,6 @@ Rectangle {
                 else
                     expectedResult = (inputPanel.activeLocales.length === 0 || inputPanel.activeLocales.indexOf(locale) !== -1) && inputPanel.availableLocales.indexOf(locale) !== -1
                 inputPanel.setLocale(locale)
-                waitForRendering(inputPanel)
                 compare(inputPanel.locale === locale, expectedResult, "Test locale %1".arg(locale))
             }
         }
@@ -1711,7 +1709,6 @@ Rectangle {
                 var cursorRect = cursorRects[i]
                 mousePress(textInput, cursorRect.x, cursorRect.y + cursorRect.height / 2, Qt.LeftButton, Qt.NoModifier, 20)
                 mouseRelease(textInput, cursorRect.x, cursorRect.y + cursorRect.height / 2, Qt.LeftButton, Qt.NoModifier, 20)
-                waitForRendering(textInput)
             }
 
             if (!inputPanel.wordCandidateListVisibleHint && inputPanel.preeditText !== data.expectedPreeditText)
@@ -1773,7 +1770,6 @@ Rectangle {
                 var cursorRect = cursorRects[i]
                 mousePress(textInput, cursorRect.x, cursorRect.y + cursorRect.height / 2, Qt.LeftButton, Qt.NoModifier, 20)
                 mouseRelease(textInput, cursorRect.x, cursorRect.y + cursorRect.height / 2, Qt.LeftButton, Qt.NoModifier, 20)
-                waitForRendering(textInput)
             }
 
             if (!inputPanel.wordCandidateListVisibleHint && inputPanel.preeditText !== data.expectedPreeditText)
@@ -1799,7 +1795,6 @@ Rectangle {
         }
 
         function test_selection(data) {
-            waitForRendering(textInput)
             prepareTest(data)
             compare(inputPanel.cursorHandle.visible, data.expectHandlesToBeVisible)
             compare(inputPanel.anchorHandle.visible, data.expectHandlesToBeVisible)
@@ -1942,13 +1937,11 @@ Rectangle {
             prepareTest(data)
             inputPanel.wordCandidateListChangedSpy.clear()
             Qt.inputMethod.show()
-            waitForRendering(inputPanel)
             compare(inputPanel.wordCandidateView.visibleCondition, data.wclAlwaysVisible)
             inputPanel.virtualKeyClick("a")
             inputPanel.virtualKeyClick("u")
             inputPanel.virtualKeyClick("t")
             inputPanel.virtualKeyClick("o")
-            waitForRendering(inputPanel)
             if (!inputPanel.wordCandidateListVisibleHint)
                 skip("Prediction/spell correction not enabled")
             inputPanel.wordCandidateListChangedSpy.wait(1000)
@@ -1959,7 +1952,6 @@ Rectangle {
                 wait(data.wclAutoHideDelay + 250)
             else
                 inputPanel.wordCandidateListVisibleSpy.wait(data.wclAutoHideDelay + 500)
-            waitForRendering(inputPanel)
             compare(inputPanel.wordCandidateView.visibleCondition, data.wclAlwaysVisible)
         }
 
@@ -1998,14 +1990,12 @@ Rectangle {
 
             inputPanel.shadowInputControlVisibleSpy.clear()
             inputPanel.setFullScreenMode(true)
-            waitForRendering(inputPanel)
             inputPanel.shadowInputControlVisibleSpy.wait()
 
             compare(inputPanel.shadowInput.text, textInput.text)
 
             inputPanel.shadowInputControlVisibleSpy.clear()
             inputPanel.setFullScreenMode(false)
-            waitForRendering(inputPanel)
             inputPanel.shadowInputControlVisibleSpy.wait()
         }
 
@@ -2027,7 +2017,6 @@ Rectangle {
             compare(inputPanel.shadowInput.preeditText, textInput.preeditText)
 
             Qt.inputMethod.commit()
-            waitForRendering(inputPanel)
             compare(textInput.text, data.outputText)
             compare(inputPanel.shadowInput.text, textInput.text)
             compare(inputPanel.shadowInput.cursorPosition, textInput.cursorPosition)
@@ -2046,7 +2035,6 @@ Rectangle {
             prepareTest(data)
 
             data.select()
-            waitForRendering(textInput)
             compare(inputPanel.shadowInput.text, textInput.text)
             compare(inputPanel.shadowInput.cursorPosition, textInput.cursorPosition)
             compare(inputPanel.shadowInput.selectedText, textInput.selectedText)
@@ -2083,6 +2071,7 @@ Rectangle {
                 { initText: "aa http://www.example.com bb", initInputMethodHints: Qt.ImhUrlCharactersOnly, clickPositions: [4], expectedPreeditText: "http://www.example.com", expectedCursorPosition: 3, expectedText: "aa  bb" },
                 { initText: "aa username@example.com bb", clickPositions: [4], expectedPreeditText: "username", expectedCursorPosition: 3, expectedText: "aa @example.com bb" },
                 { initText: "aa username@example.com bb", initInputMethodHints: Qt.ImhEmailCharactersOnly, clickPositions: [4], expectedPreeditText: "username@example.com", expectedCursorPosition: 3, expectedText: "aa  bb" },
+                { initText: "hello world", clickPositions: [1], expectedPreeditText: "hello", expectedCursorPosition: 0, expectedText: " world" },
             ]
         }
 
@@ -2102,7 +2091,6 @@ Rectangle {
                 var cursorRect = cursorRects[i]
                 mousePress(inputPanel.shadowInput, cursorRect.x, cursorRect.y + cursorRect.height / 2, Qt.LeftButton, Qt.NoModifier, 20)
                 mouseRelease(inputPanel.shadowInput, cursorRect.x, cursorRect.y + cursorRect.height / 2, Qt.LeftButton, Qt.NoModifier, 20)
-                waitForRendering(inputPanel.shadowInput)
             }
 
             if (!inputPanel.wordCandidateListVisibleHint && inputPanel.preeditText !== data.expectedPreeditText)
@@ -2246,6 +2234,51 @@ Rectangle {
             }
 
             Qt.inputMethod.reset()
+        }
+
+        function test_visibleFunctionKey_data() {
+            return [
+                { initLocale: "en_GB", functionKeysAlwaysVisible: false },
+                // Number and digits layouts must always have the function keys, because otherwise the layout design looks bad
+                { initLocale: "en_GB", functionKeysAlwaysVisible: true, initInputMethodHints: Qt.ImhFormattedNumbersOnly },
+                { initLocale: "en_GB", functionKeysAlwaysVisible: true, initInputMethodHints: Qt.ImhDigitsOnly },
+                // Symbol layout follow the main layout
+                { initLocale: "en_GB", functionKeysAlwaysVisible: false, initInputMethodHints: Qt.ImhPreferNumbers },
+            ]
+        }
+
+        function test_visibleFunctionKey(data) {
+            prepareTest(data, true)
+
+            const changeLanguageKey = inputPanel.findKeyByKeyType("ChangeLanguageKey")
+            verify(!!changeLanguageKey)
+            const hideKeyboardKey = inputPanel.findKeyByKeyType("HideKeyboardKey")
+            verify(!!hideKeyboardKey)
+
+            for (const functionKeyName of [
+                     "None",
+                     "Hide",
+                     "Language",
+                     "All"
+                 ]) {
+                inputPanel.setVisibleFunctionKeys([functionKeyName])
+                if (data.functionKeysAlwaysVisible) {
+                    compare(changeLanguageKey.visible, true)
+                    compare(hideKeyboardKey.visible, true)
+                } else if (functionKeyName === "None") {
+                    compare(changeLanguageKey.visible, false)
+                    compare(hideKeyboardKey.visible, false)
+                } else if (functionKeyName === "Hide") {
+                    compare(changeLanguageKey.visible, false)
+                    compare(hideKeyboardKey.visible, true)
+                } else if (functionKeyName === "Language") {
+                    compare(changeLanguageKey.visible, true)
+                    compare(hideKeyboardKey.visible, false)
+                } else if (functionKeyName === "All") {
+                    compare(changeLanguageKey.visible, true)
+                    compare(hideKeyboardKey.visible, true)
+                }
+            }
         }
     }
 }

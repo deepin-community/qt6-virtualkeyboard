@@ -1,3 +1,6 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
 #####################################################################
 ## QtVirtualKeyboardXt9Plugin Plugin:
 #####################################################################
@@ -5,6 +8,7 @@
 qt_internal_add_qml_module(qtvkbcerencext9plugin
     URI "QtQuick.VirtualKeyboard.Plugins.Cerence.XT9"
     VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2
     PLUGIN_TARGET qtvkbcerencext9plugin
     NO_PLUGIN_OPTIONAL
     DEPENDENCIES

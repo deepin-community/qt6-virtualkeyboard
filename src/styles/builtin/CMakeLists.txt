@@ -1,6 +1,10 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
 qt_internal_add_qml_module(qtvkbbuiltinstylesplugin
     URI "QtQuick.VirtualKeyboard.Styles.Builtin"
     VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2 1
     PLUGIN_TARGET qtvkbbuiltinstylesplugin
     CLASS_NAME "QtQuickVirtualKeyboardStylesBuiltinPlugin"
     NO_PLUGIN_OPTIONAL

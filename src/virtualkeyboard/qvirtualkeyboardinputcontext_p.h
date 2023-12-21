@@ -23,6 +23,7 @@
 #include <QtVirtualKeyboard/qvirtualkeyboardinputcontext.h>
 #include <QtVirtualKeyboard/private/shadowinputcontext_p.h>
 #include <QtVirtualKeyboard/qvirtualkeyboardobserver.h>
+#include <QtVirtualKeyboard/private/qvirtualkeyboardnamespace_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -94,6 +95,7 @@ public:
     Q_INVOKABLE bool hasEnterKeyAction(QObject *item) const;
     Q_INVOKABLE void registerInputPanel(QObject *inputPanel);
     Q_INVOKABLE bool contains(const QPointF &point) const;
+    Q_INVOKABLE QtVirtualKeyboard::KeyboardFunctionKey keyboardFunctionKey(QtVirtualKeyboard::KeyboardFunction keyboardFunction) const;
 
 Q_SIGNALS:
     void focusChanged();
@@ -128,6 +130,7 @@ private:
     inline void clearState(const State &state) { stateFlags &= ~StateFlags(state); }
     inline bool testState(const State &state) const { return stateFlags.testFlag(state); }
     inline bool isEmptyState() const { return !stateFlags; }
+    void updateSelectionControlVisible(bool inputPanelVisible);
 
 private:
     QVirtualKeyboardInputContext *q_ptr;
@@ -189,6 +192,23 @@ private:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QVirtualKeyboardInputContextPrivate::StateFlags)
+
+/*!
+    TODO: Remove this type and move the registration back into QVirtualKeyboardInputContext when
+          QML stops creating separate singleton instances for each version.
+ */
+struct QVirtualKeyboardInputContextForeign
+{
+    Q_GADGET
+    QML_FOREIGN(QVirtualKeyboardInputContext)
+    QML_NAMED_ELEMENT(InputContext)
+    QML_SINGLETON
+    QML_ADDED_IN_VERSION(1, 0)
+    QML_EXTRA_VERSION(2, 0)
+
+public:
+    static QVirtualKeyboardInputContext *create(QQmlEngine *qmlEngine, QJSEngine *);
+};
 
 QT_END_NAMESPACE
 

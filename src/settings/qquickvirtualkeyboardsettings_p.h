@@ -15,6 +15,7 @@
 // We mean it.
 //
 
+#include <QtVirtualKeyboard/private/qvirtualkeyboardnamespace_p.h>
 #include <QtQml/qqml.h>
 #include <QtCore/private/qglobal_p.h>
 
@@ -43,14 +44,16 @@ class QQuickVirtualKeyboardSettings : public QObject
     Q_PROPERTY(bool handwritingModeDisabled READ isHandwritingModeDisabled WRITE setHandwritingModeDisabled NOTIFY handwritingModeDisabledChanged REVISION(6, 1))
     Q_PROPERTY(bool defaultInputMethodDisabled READ isDefaultInputMethodDisabled WRITE setDefaultInputMethodDisabled NOTIFY defaultInputMethodDisabledChanged REVISION(6, 1))
     Q_PROPERTY(bool defaultDictionaryDisabled READ isDefaultDictionaryDisabled WRITE setDefaultDictionaryDisabled NOTIFY defaultDictionaryDisabledChanged REVISION(6, 1))
+    Q_PROPERTY(QtVirtualKeyboard::KeyboardFunctionKeys visibleFunctionKeys READ visibleFunctionKeys WRITE setVisibleFunctionKeys NOTIFY visibleFunctionKeysChanged REVISION(6, 6))
     QML_NAMED_ELEMENT(VirtualKeyboardSettings)
     QML_SINGLETON
     QML_ADDED_IN_VERSION(1, 0)
     QML_EXTRA_VERSION(2, 0)
 
-public:
-    explicit QQuickVirtualKeyboardSettings(QObject *parent = nullptr);
+    explicit QQuickVirtualKeyboardSettings(QQmlEngine *engine, QObject *parent = nullptr);
 
+public:
+    static QQuickVirtualKeyboardSettings *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
     QString style() const;
 
     QUrl layoutPath() const;
@@ -93,6 +96,9 @@ public:
     bool isDefaultDictionaryDisabled() const;
     void setDefaultDictionaryDisabled(bool defaultDictionaryDisabled);
 
+    QtVirtualKeyboard::KeyboardFunctionKeys visibleFunctionKeys() const;
+    void setVisibleFunctionKeys(QtVirtualKeyboard::KeyboardFunctionKeys newVisibleFunctionKeys);
+
 signals:
     void styleChanged();
     void styleNameChanged();
@@ -109,6 +115,7 @@ signals:
     Q_REVISION(6, 1) void handwritingModeDisabledChanged();
     Q_REVISION(6, 1) void defaultInputMethodDisabledChanged();
     Q_REVISION(6, 1) void defaultDictionaryDisabledChanged();
+    Q_REVISION(6, 6) void visibleFunctionKeysChanged();
 
 private:
     void resetStyle();

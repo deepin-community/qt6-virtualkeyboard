@@ -1,3 +1,6 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
 # Generated from styles.pro.
 
 #####################################################################
@@ -15,10 +18,28 @@ qt_internal_add_test(tst_styles
     SOURCES
         tst_styles.cpp
     DEFINES
-        TESTDATA_DIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}/data\\\"
-    PUBLIC_LIBRARIES
+        TESTDATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data"
+    LIBRARIES
         Qt::Gui
     TESTDATA ${test_data}
+)
+
+qt_internal_add_resource(tst_styles "test_res"
+    PREFIX
+        "/qt/qml/QtQuick/VirtualKeyboard/Styles/test_res"
+    BASE
+        "data/QtQuick/VirtualKeyboard/Styles/test"
+    FILES
+        "data/QtQuick/VirtualKeyboard/Styles/test/style.qml"
+)
+
+qt_internal_add_resource(tst_styles "test_res_compat"
+    PREFIX
+        "/QtQuick/VirtualKeyboard/content/styles/test_res_compat"
+    BASE
+        "data/QtQuick/VirtualKeyboard/Styles/test"
+    FILES
+        "data/QtQuick/VirtualKeyboard/Styles/test/style.qml"
 )
 
 #### Keys ignored in scope 1:.:.:styles.pro:<TRUE>:
@@ -30,7 +51,7 @@ qt_internal_add_test(tst_styles
 #####################################################################
 
 qt_internal_extend_target(tst_styles CONDITION NOT QT_BUILD_SHARED_LIBS
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::Svg
 )
 

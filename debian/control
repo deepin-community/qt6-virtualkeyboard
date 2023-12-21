@@ -14,17 +14,15 @@ Build-Depends: cmake (>= 3.24~),
                ninja-build,
                pkg-config,
                pkg-kde-tools,
-               qml6-module-qtquick (>= 6.4.2+dfsg~),
-               qml6-module-qttest (>= 6.4.2+dfsg~),
-               qt6-base-dev (>= 6.4.2+dfsg~),
-               qt6-base-private-dev (>= 6.4.2+dfsg~),
-               qt6-declarative-dev (>= 6.4.2+dfsg~),
-               qt6-declarative-private-dev (>= 6.4.2+dfsg~),
-               qt6-svg-dev (>= 6.4.2~),
+               qt6-base-dev (>= 6.6.1+dfsg~),
+               qt6-base-private-dev (>= 6.6.1+dfsg~),
+               qt6-declarative-dev (>= 6.6.1+dfsg~),
+               qt6-declarative-private-dev (>= 6.6.1+dfsg~),
+               qt6-svg-dev (>= 6.6.1~),
                xauth <!nocheck>,
                xvfb <!nocheck>,
-Build-Depends-Indep: qt6-base-dev (>= 6.4~) <!nodoc>,
-                     qt6-documentation-tools (>= 6.4~) <!nodoc>,
+Build-Depends-Indep: qt6-base-dev (>= 6.6~) <!nodoc>,
+                     qt6-documentation-tools (>= 6.6~) <!nodoc>,
 Standards-Version: 4.6.2
 Homepage: https://www.qt.io/developers/
 Vcs-Browser: https://salsa.debian.org/qt-kde-team/qt6/qt6-virtualkeyboard
@@ -45,24 +43,12 @@ Description: Qt 6 Virtual Keyboard library
  .
  This package contains the Qt Virtual Keyboard library.
 
-Package: libqt6hunspellinputmethod6
-Architecture: any
-Multi-Arch: same
-Depends: ${misc:Depends}, ${shlibs:Depends},
-Description: Qt 6 Hunspell Input Method helper library
- Qt is a cross-platform C++ application framework. Qt's primary feature
- is its rich set of widgets that provide standard GUI functionality.
- .
- The Qt Virtual Keyboard project provides an input framework and
- reference keyboard frontend for Qt 6 on Linux Desktop/X11, Windows
- Desktop, and Boot2Qt targets.
- .
- This package contains the Qt 6 Hunspell Input Method helper library.
-
 Package: qml6-module-qtquick-virtualkeyboard
 Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends}, ${shlibs:Depends},
+Breaks: libqt6hunspellinputmethod6,
+Replaces: libqt6hunspellinputmethod6,
 Description: Qt 6 Virtual Keyboard QML module
  Qt is a cross-platform C++ application framework. Qt's primary feature
  is its rich set of widgets that provide standard GUI functionality.

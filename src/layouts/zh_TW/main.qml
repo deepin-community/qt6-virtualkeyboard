@@ -11,7 +11,16 @@ KeyboardLayoutLoader {
         return Qt.createQmlObject('import QtQuick; import QtQuick.VirtualKeyboard.Plugins; TCInputMethod {}', parent, "main.qml")
     }
     sharedLayouts: ['symbols']
-    sourceComponent: InputContext.inputEngine.inputMode === InputEngine.InputMode.Cangjie ? pageCangjie : pageZhuyin
+    sourceComponent: {
+        switch (InputContext.inputEngine.inputMode) {
+        case InputEngine.InputMode.Cangjie:
+            return pageCangjie
+        case InputEngine.InputMode.Zhuyin:
+            return pageZhuyin
+        default:
+            return null
+        }
+    }
     Component {
         id: pageCangjie
         KeyboardLayout {
@@ -173,13 +182,17 @@ KeyboardLayoutLoader {
                     weight: functionKeyWidth
                     Layout.fillWidth: false
                 }
+                ChangeLanguageKey {
+                    weight: normalKeyWidth
+                    Layout.fillWidth: false
+                }
                 Key {
                     key: Qt.Key_Comma
                     weight: normalKeyWidth
                     Layout.fillWidth: false
                     text: "\uFF0C"
                     smallText: "\u2699"
-                    smallTextVisible: true
+                    smallTextVisible: keyboard.isFunctionPopupListAvailable()
                     highlighted: true
                 }
                 InputModeKey {
@@ -198,6 +211,10 @@ KeyboardLayoutLoader {
                     smallText: "!?"
                     smallTextVisible: true
                     highlighted: true
+                }
+                HideKeyboardKey {
+                    weight: normalKeyWidth
+                    Layout.fillWidth: false
                 }
                 EnterKey {
                     weight: functionKeyWidth
@@ -394,13 +411,17 @@ KeyboardLayoutLoader {
                     weight: functionKeyWidth
                     Layout.fillWidth: false
                 }
+                ChangeLanguageKey {
+                    weight: normalKeyWidth
+                    Layout.fillWidth: false
+                }
                 Key {
                     key: Qt.Key_Comma
                     weight: normalKeyWidth
                     Layout.fillWidth: false
                     text: "\uFF0C"
                     smallText: "\u2699"
-                    smallTextVisible: true
+                    smallTextVisible: keyboard.isFunctionPopupListAvailable()
                     highlighted: true
                 }
                 InputModeKey {
@@ -421,6 +442,10 @@ KeyboardLayoutLoader {
                     highlighted: true
                 }
                 BackspaceKey {
+                    weight: normalKeyWidth
+                    Layout.fillWidth: false
+                }
+                HideKeyboardKey {
                     weight: normalKeyWidth
                     Layout.fillWidth: false
                 }

@@ -1,3 +1,6 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
 
 
 #### Inputs
@@ -33,7 +36,7 @@ qt_feature("vkb-arrow-keynavigation" PUBLIC
 )
 qt_feature("vkb-desktop" PUBLIC
     LABEL "Desktop integration"
-    CONDITION NOT cross_compile
+    CONDITION NOT ANDROID
 )
 qt_feature("vkb-layouts" PUBLIC
     LABEL "Built-in layouts"
@@ -176,6 +179,13 @@ qt_feature("thai" PRIVATE
     LABEL "Thai"
     AUTODETECT ( NOT INPUT_lang_th_TH STREQUAL 'no' )
     DISABLE QT_FEATURE_cerence_xt9
+)
+qt_feature("example-hwr" PRIVATE
+    LABEL "Example HWR"
+    ENABLE INPUT_vkb_handwriting STREQUAL 'example-hwr'
+    AUTODETECT ( FALSE )
+    DISABLE NOT INPUT_vkb_handwriting STREQUAL '' AND NOT INPUT_vkb_handwriting STREQUAL 'example-hwr'
+    PURPOSE "Generates random characters in response to handwriting input. For development and demonstration purposes only."
 )
 qt_feature("vkb-lang-ar_AR" PRIVATE
     LABEL "Arabic"
@@ -373,6 +383,7 @@ qt_configure_add_summary_entry(ARGS "hunspell")
 qt_configure_add_summary_entry(ARGS "3rdparty-hunspell")
 qt_configure_add_summary_entry(ARGS "openwnn")
 qt_configure_add_summary_entry(ARGS "myscript")
+qt_configure_add_summary_entry(ARGS "example-hwr")
 qt_configure_add_summary_section(NAME "Language support enabled for")
 qt_configure_add_summary_entry(ARGS "vkb-lang-ar_AR")
 qt_configure_add_summary_entry(ARGS "vkb-lang-bg_BG")

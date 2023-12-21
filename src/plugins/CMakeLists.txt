@@ -1,7 +1,14 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
 set(plugins_imports)
 if(QT_FEATURE_cerence_sdk)
     add_subdirectory(cerence)
     list(APPEND plugins_imports QtQuick.VirtualKeyboard.Plugins.Cerence/auto)
+endif()
+if(QT_FEATURE_example_hwr)
+    add_subdirectory(example)
+    list(APPEND plugins_imports QtQuick.VirtualKeyboard.Plugins.Example/auto)
 endif()
 if(QT_FEATURE_hangul)
     add_subdirectory(hangul)
@@ -35,6 +42,7 @@ endif()
 qt_internal_add_qml_module(qtvkbpluginsplugin
     URI "QtQuick.VirtualKeyboard.Plugins"
     VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2
     PLUGIN_TARGET qtvkbpluginsplugin
     IMPORTS
         ${plugins_imports}

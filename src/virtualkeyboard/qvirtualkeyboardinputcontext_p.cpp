@@ -18,6 +18,7 @@
 #include <QtQuick/qquickwindow.h>
 #include <QtGui/qpa/qplatformintegration.h>
 #include <QtGui/private/qguiapplication_p.h>
+#include <QQmlEngine>
 
 QT_BEGIN_NAMESPACE
 
@@ -262,6 +263,19 @@ bool QVirtualKeyboardInputContextPrivate::contains(const QPointF &point) const
     }
     // dimmer doesn't contain points that hit the input panel
     return !hit;
+}
+
+KeyboardFunctionKey QVirtualKeyboardInputContextPrivate::keyboardFunctionKey(QtVirtualKeyboard::KeyboardFunction keyboardFunction) const
+{
+    switch (keyboardFunction) {
+    case KeyboardFunction::HideInputPanel:
+        return KeyboardFunctionKey::Hide;
+    case KeyboardFunction::ChangeLanguage:
+        return KeyboardFunctionKey::Language;
+    case KeyboardFunction::ToggleHandwritingMode:
+        return KeyboardFunctionKey::None;
+    }
+    return KeyboardFunctionKey::None;
 }
 
 void QVirtualKeyboardInputContextPrivate::onInputItemChanged()
@@ -617,6 +631,28 @@ int QVirtualKeyboardInputContextPrivate::findAttribute(const QList<QInputMethodE
             return i;
     }
     return -1;
+}
+
+void QVirtualKeyboardInputContextPrivate::updateSelectionControlVisible(bool inputPanelVisible)
+{
+    Q_Q(QVirtualKeyboardInputContext);
+    bool newSelectionControlVisible = inputPanelVisible && (cursorPosition != anchorPosition) && !inputMethodHints.testFlag(Qt::ImhNoTextHandles);
+    if (selectionControlVisible != newSelectionControlVisible) {
+        selectionControlVisible = newSelectionControlVisible;
+        emit q->selectionControlVisibleChanged();
+    }
+}
+
+QVirtualKeyboardInputContext *QVirtualKeyboardInputContextForeign::create(
+        QQmlEngine *qmlEngine, QJSEngine *)
+{
+    static QMutex mutex;
+    static QHash<QQmlEngine *, QVirtualKeyboardInputContext *> instances;
+    QMutexLocker locker(&mutex);
+    QVirtualKeyboardInputContext *&instance = instances[qmlEngine];
+    if (instance == nullptr)
+        instance = new QVirtualKeyboardInputContext(qmlEngine);
+    return instance;
 }
 
 QT_END_NAMESPACE

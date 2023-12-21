@@ -87,7 +87,7 @@ void Xt9LdbManager::closeAll()
 QString Xt9LdbManager::findDictionary(const QLocale &locale) const
 {
     QStringList languageCountry = locale.name().split(QLatin1String("_"));
-    if (languageCountry.length() != 2)
+    if (languageCountry.size() != 2)
         return QString();
     const QString language_ISO_639_1 = languageCountry[0].toUpper();
     const QString country = languageCountry[1].toUpper();
@@ -139,9 +139,9 @@ QString Xt9LdbManager::findDictionary(const QLocale &locale) const
                          (script == QLocale::TraditionalHanScript && charsetClassifier == QLatin1String("tb"))))
                     ++score;
 
-                if (locale.country() == QLocale::Taiwan && xt9CountryOrDetail == QLatin1String("ps_Big5_bpmf_pinyin_CJ"))
+                if (locale.territory() == QLocale::Taiwan && xt9CountryOrDetail == QLatin1String("ps_Big5_bpmf_pinyin_CJ"))
                     ++score;
-                else if (locale.country() == QLocale::HongKong && xt9CountryOrDetail == QLatin1String("ps_Big5HKSCS_bpmf_pinyin_CJ"))
+                else if (locale.territory() == QLocale::HongKong && xt9CountryOrDetail == QLatin1String("ps_Big5HKSCS_bpmf_pinyin_CJ"))
                     ++score;
 
                 if (!almClassifier.isEmpty())

@@ -1,3 +1,6 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
 #####################################################################
 ## QtVirtualKeyboardMyScriptPlugin Plugin:
 #####################################################################
@@ -20,6 +23,7 @@ set(MYSCRIPT_LANGUAGE_RESOURCES_NAME "resources")
 qt_internal_add_qml_module(qtvkbmyscriptplugin
     URI "QtQuick.VirtualKeyboard.Plugins.MyScript"
     VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2
     PLUGIN_TARGET qtvkbmyscriptplugin
     NO_PLUGIN_OPTIONAL
     DEPENDENCIES
@@ -28,13 +32,12 @@ qt_internal_add_qml_module(qtvkbmyscriptplugin
         ${MyScript_ROOT_DIR}/voim/api/c/examples/common/Properties.c
         myscriptinputmethod.cpp myscriptinputmethod_p.h
         myscriptinputmethod_p_p.h
-        myscriptplugin.cpp myscriptplugin.h
     DEFINES
-        MYSCRIPT_CERTIFICATE=\\\"${MyScript_ROOT_DIR}/edk/c/examples/certificates/MyCertificate.c\\\"
-        MYSCRIPT_VOIM_PROPERTY_PATH=\\\"${MYSCRIPT_INSTALL_DATA}/${MYSCRIPT_VOIM_PROPERTY_NAME}\\\"
-        MYSCRIPT_LANGUAGE_CONF_PATH=\\\"${MYSCRIPT_INSTALL_DATA}/${MYSCRIPT_LANGUAGE_CONF_NAME}\\\"
-        MYSCRIPT_VOIM_NAME=\\\"${MYSCRIPT_VOIM_NAME}\\\"
-        MYSCRIPT_ENGINE_NAME=\\\"${MYSCRIPT_ENGINE_NAME}\\\"
+        MYSCRIPT_CERTIFICATE="${MyScript_ROOT_DIR}/edk/c/examples/certificates/MyCertificate.c"
+        MYSCRIPT_VOIM_PROPERTY_PATH="${MYSCRIPT_INSTALL_DATA}/${MYSCRIPT_VOIM_PROPERTY_NAME}"
+        MYSCRIPT_LANGUAGE_CONF_PATH="${MYSCRIPT_INSTALL_DATA}/${MYSCRIPT_LANGUAGE_CONF_NAME}"
+        MYSCRIPT_VOIM_NAME="${MYSCRIPT_VOIM_NAME}"
+        MYSCRIPT_ENGINE_NAME="${MYSCRIPT_ENGINE_NAME}"
         # POSIX source must be required to use "strdup" for "Properties.c"
         _POSIX_C_SOURCE=200809L
     INCLUDE_DIRECTORIES
@@ -103,7 +106,7 @@ endif()
 
 if (QT_FEATURE_vkb_lang_cs_CZ)
     list(APPEND qmake_virtualkeyboard_myscript_layouts_resource_files
-        "${VKB_LAYOUTS_BASE}/cs_CZ/handwriting.qml"
+        "${VKB_LAYOUTS_BASE}/cs_CZ/handwriting.fallback"
     )
 endif()
 
@@ -175,19 +178,19 @@ endif()
 
 if (QT_FEATURE_vkb_lang_hi_IN)
     list(APPEND qmake_virtualkeyboard_myscript_layouts_resource_files
-        "${VKB_LAYOUTS_BASE}/hi_IN/handwriting.qml"
+        "${VKB_LAYOUTS_BASE}/hi_IN/handwriting.fallback"
     )
 endif()
 
 if (QT_FEATURE_vkb_lang_hr_HR)
     list(APPEND qmake_virtualkeyboard_myscript_layouts_resource_files
-        "${VKB_LAYOUTS_BASE}/hr_HR/handwriting.qml"
+        "${VKB_LAYOUTS_BASE}/hr_HR/handwriting.fallback"
     )
 endif()
 
 if (QT_FEATURE_vkb_lang_hu_HU)
     list(APPEND qmake_virtualkeyboard_myscript_layouts_resource_files
-        "${VKB_LAYOUTS_BASE}/hu_HU/handwriting.qml"
+        "${VKB_LAYOUTS_BASE}/hu_HU/handwriting.fallback"
     )
 endif()
 
@@ -253,7 +256,7 @@ endif()
 
 if (QT_FEATURE_vkb_lang_ro_RO)
     list(APPEND qmake_virtualkeyboard_myscript_layouts_resource_files
-        "${VKB_LAYOUTS_BASE}/ro_RO/handwriting.qml"
+        "${VKB_LAYOUTS_BASE}/ro_RO/handwriting.fallback"
     )
 endif()
 
