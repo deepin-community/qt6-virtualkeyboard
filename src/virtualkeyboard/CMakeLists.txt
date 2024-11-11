@@ -23,7 +23,6 @@ qt_internal_add_qml_module(VirtualKeyboard
         QtQuick.Window/auto
         QtQuick.Layouts/auto
         Qt.labs.folderlistmodel/auto
-        QtQuick.VirtualKeyboard.Settings/auto
         QtQuick.VirtualKeyboard.Styles/auto
         QtQuick.VirtualKeyboard.Plugins/auto
     IMPORTS
@@ -70,6 +69,11 @@ qt_internal_add_qml_module(VirtualKeyboard
         QT_NO_CAST_FROM_BYTEARRAY
         QT_NO_CAST_TO_ASCII
         QVIRTUALKEYBOARD_LIBRARY
+    NO_UNITY_BUILD_SOURCES
+        # "using namespace" causes "reference to 'QtPrivateLogging' is ambiguous"
+        platforminputcontext.cpp
+        qvirtualkeyboardinputcontext_p.cpp
+
     LIBRARIES
         Qt::CorePrivate
         Qt::GuiPrivate
@@ -81,8 +85,6 @@ qt_internal_add_qml_module(VirtualKeyboard
     PRIVATE_MODULE_INTERFACE
         Qt::CorePrivate
         Qt::GuiPrivate
-    GENERATE_CPP_EXPORTS
-    GENERATE_PRIVATE_CPP_EXPORTS
 )
 
 qt_internal_extend_target(VirtualKeyboard CONDITION QT_FEATURE_vkb_desktop

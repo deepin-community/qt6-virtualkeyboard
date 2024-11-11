@@ -1,3 +1,53 @@
+qt6-virtualkeyboard (6.8.0+dfsg-0deepin) unstable; urgency=medium
+
+  * New upstream release (6.8.0).
+
+ -- lichenggang <lichenggang@deepin.org>  Mon, 11 Nov 2024 10:45:50 +0800
+
+qt6-virtualkeyboard (6.7.2+dfsg-3) unstable; urgency=medium
+
+  * Remove virtual package libqt6virtualkeyboard6-dev.
+
+ -- Patrick Franz <deltaone@debian.org>  Sat, 05 Oct 2024 02:09:35 +0200
+
+qt6-virtualkeyboard (6.7.2+dfsg-2) experimental; urgency=medium
+
+  [ Patrick Franz ]
+  * Fix handling of private symbols.
+
+ -- Patrick Franz <deltaone@debian.org>  Sun, 08 Sep 2024 14:59:49 +0200
+
+qt6-virtualkeyboard (6.7.2+dfsg-1) experimental; urgency=medium
+
+  [ Patrick Franz ]
+  * New upstream release (6.7.2).
+  * Bump Qt B-Ds to 6.7.2.
+  * Update list of installed files.
+  * Bump Standards-Version to 4.7.0 (no changes needed).
+  * Update symbols from buildlogs.
+  * Remove hack to work around the problem of failing builds with
+    parallel=1 (Closes: #1040496).
+  * Update d/copyright.
+
+ -- Patrick Franz <deltaone@debian.org>  Tue, 03 Sep 2024 18:34:08 +0200
+
+qt6-virtualkeyboard (6.6.2+dfsg-2) unstable; urgency=medium
+
+  [ Patrick Franz ]
+  * Upload to unstable.
+
+ -- Patrick Franz <deltaone@debian.org>  Thu, 06 Jun 2024 18:44:25 +0200
+
+qt6-virtualkeyboard (6.6.2+dfsg-1) experimental; urgency=medium
+
+  [ Patrick Franz ]
+  * New upstream release (6.6.2).
+  * Bump Qt B-Ds to 6.6.2.
+  * Build-depend on pkgconf instead of pkg-config as the latter has been
+    superseded by the former.
+
+ -- Patrick Franz <deltaone@debian.org>  Fri, 16 Feb 2024 23:12:42 +0100
+
 qt6-virtualkeyboard (6.6.1+dfsg-1) experimental; urgency=medium
 
   [ Patrick Franz ]

@@ -25,15 +25,18 @@
 #include <QtVirtualKeyboard/qvirtualkeyboardobserver.h>
 #include <QtVirtualKeyboard/private/qvirtualkeyboardnamespace_p.h>
 
+#include <QtCore/qpointer.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace QtVirtualKeyboard {
 
-// Boolean variable QT_VIRTUALKEYBOARD_FORCE_EVENTS_WITHOUT_FOCUS will enable virtual keyboard
+// QtVirtualKeyboard::forceEventsWithoutFocus() will enable virtual keyboard
 // to send key events without having any text input in focus when an environment
 // variable QT_VIRTUALKEYBOARD_FORCE_EVENTS_WITHOUT_FOCUS is set. This will also enable virtual
 // keyboard shift key usage in the same no focus situation.
-extern const bool QT_VIRTUALKEYBOARD_FORCE_EVENTS_WITHOUT_FOCUS;
+
+bool forceEventsWithoutFocus();
 
 class PlatformInputContext;
 class ShiftHandler;
@@ -122,6 +125,7 @@ private:
     void commit();
     void update(Qt::InputMethodQueries queries);
     void invokeAction(QInputMethod::Action action, int cursorPosition);
+    void maybeCloseOnReturn();
     bool filterEvent(const QEvent *event);
     void addSelectionAttribute(QList<QInputMethodEvent::Attribute> &attributes);
     bool testAttribute(const QList<QInputMethodEvent::Attribute> &attributes, QInputMethodEvent::AttributeType attributeType) const;

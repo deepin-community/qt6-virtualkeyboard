@@ -1,1 +1,2 @@
 usr/lib/${DEB_HOST_MULTIARCH}/libQt6VirtualKeyboard.so.*
+usr/lib/${DEB_HOST_MULTIARCH}/libQt6VirtualKeyboardSettings.so.*

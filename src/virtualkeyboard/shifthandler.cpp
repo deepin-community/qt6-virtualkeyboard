@@ -13,6 +13,8 @@
 
 QT_BEGIN_NAMESPACE
 
+using namespace Qt::StringLiterals;
+
 size_t qHash(QLocale::Language lang, size_t seed)
 {
     return qHash(ushort(lang), seed);
@@ -26,7 +28,7 @@ public:
     ShiftHandlerPrivate() :
         QObjectPrivate(),
         inputContext(nullptr),
-        sentenceEndingCharacters(QLatin1String(".!?") + QChar(Qt::Key_exclamdown) + QChar(Qt::Key_questiondown)),
+        sentenceEndingCharacters(u".!?¡¿"_s),
         autoCapitalizationEnabled(false),
         toggleShiftEnabled(false),
         shift(false),
@@ -60,7 +62,7 @@ public:
     \qmltype ShiftHandler
     \inqmlmodule QtQuick.VirtualKeyboard
     \ingroup qtvirtualkeyboard-internal-qml
-    \instantiates QtVirtualKeyboard::ShiftHandler
+    \nativetype QtVirtualKeyboard::ShiftHandler
     \brief Manages the shift state.
 */
 
@@ -235,7 +237,7 @@ void ShiftHandler::clearToggleShiftTimer()
 void ShiftHandler::reset()
 {
     Q_D(ShiftHandler);
-    if (d->inputContext->priv()->inputItem() || QT_VIRTUALKEYBOARD_FORCE_EVENTS_WITHOUT_FOCUS) {
+    if (d->inputContext->priv()->inputItem() || QtVirtualKeyboard::forceEventsWithoutFocus()) {
         Qt::InputMethodHints inputMethodHints = d->inputContext->inputMethodHints();
         QVirtualKeyboardInputEngine::InputMode inputMode = d->inputContext->inputEngine()->inputMode();
         bool preferUpperCase = (inputMethodHints & (Qt::ImhPreferUppercase | Qt::ImhUppercaseOnly));
