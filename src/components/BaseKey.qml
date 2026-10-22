@@ -23,7 +23,7 @@ import QtQuick.VirtualKeyboard
 Item {
     id: keyItem
 
-    /*! \since QtQuick.VirtualKeyboard 6.1
+    /*! \since 6.1
 
         \l Key type for the specialized key. Possible values are defined by the
         {QtVirtualKeyboard::KeyType}{key type enumeration}.
@@ -119,7 +119,7 @@ Item {
         return index > 0 && (index + 1) == alternativeKeys.length ? index - 1 : index
     }
 
-    /*! \since QtQuick.VirtualKeyboard 6.2
+    /*! \since 6.2
 
         This property allows overriding the list of key strings presented to the user in the
         alternative keys view.
@@ -179,9 +179,13 @@ Item {
 
     /*! Sets the show preview attribute.
 
-        By default, the character preview popup is not shown for function keys.
+        By default, the character preview popup is not shown for function keys,
+        nor when the focused input item hides the text it displays, for example
+        a password field. In the latter case the preview would reveal the
+        characters the input item masks.
     */
-    property bool showPreview: enabled && !functionKey && !keyboard.navigationModeActive
+    property bool showPreview: enabled && !functionKey && !keyboard.navigationModeActive &&
+                               keyboard.inputItemEchoMode === TextInput.Normal
 
     /*! This property holds the pressed status of the key.
 

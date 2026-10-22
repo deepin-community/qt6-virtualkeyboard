@@ -1,6 +1,7 @@
 Description: disable building plugins requiring non-DFSG compliant 3rdparty code
 
 Author: Lu YaNing <dluyaning@gmail.com>
+Forwarded: not-needed
 Last-Update: 2023-12-19
 
 --- a/src/plugins/CMakeLists.txt

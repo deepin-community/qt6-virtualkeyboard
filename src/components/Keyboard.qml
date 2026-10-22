@@ -23,7 +23,7 @@ Item {
     property alias characterPreview: characterPreview
     property alias wordCandidateContextMenu: wordCandidateContextMenu
     property alias fullScreenModeSelectionControl: fullScreenModeSelectionControl
-    property alias naviationHighlight: naviationHighlight
+    property alias navigationHighlight: navigationHighlight
     property alias keyboardInputArea: keyboardInputArea
     property Item activeKey: null
     property TouchPoint activeTouchPoint
@@ -38,6 +38,21 @@ Item {
     readonly property bool dialableCharactersOnly: InputContext.inputMethodHints & Qt.ImhDialableCharactersOnly
     readonly property bool formattedNumbersOnly: InputContext.inputMethodHints & Qt.ImhFormattedNumbersOnly
     readonly property bool digitsOnly: InputContext.inputMethodHints & Qt.ImhDigitsOnly
+    /*  Echo mode of the focused input item.
+
+        Qt Quick input items clear Qt.ImhHiddenText for TextInput.Password and
+        TextInput.PasswordEchoOnEdit, and set Qt.ImhSensitiveData instead, so
+        the input method hints alone do not tell whether the input item hides
+        the text it displays. Therefore the echo mode of the input item is used
+        when it provides one, and the input method hints only as a fallback.
+    */
+    readonly property int inputItemEchoMode: {
+        const inputItem = InputContext.priv.inputItem
+        const echoMode = inputItem ? inputItem.echoMode : undefined
+        if (echoMode !== undefined)
+            return echoMode
+        return (InputContext.inputMethodHints & Qt.ImhHiddenText) ? TextInput.Password : TextInput.Normal
+    }
     property string layout
     property string layoutType: {
         if (keyboard.handwritingMode) return "handwriting"
@@ -102,6 +117,10 @@ Item {
         }
         function onDefaultInputMethodDisabledChanged() {
             updateInputMethod()
+        }
+        function onArrowKeyNavigationEnabledChanged() {
+            if (!VirtualKeyboardSettings.arrowKeyNavigationEnabled)
+                keyboard.navigationModeActive = false
         }
     }
     onAvailableLocaleIndicesChanged: hideLanguagePopup()
@@ -500,7 +519,6 @@ Item {
                 InputContext.priv.previewRectangle = Qt.binding(function() {return previewRect})
             else
                 openedByNavigationKeyLongPress = false
-            InputContext.priv.previewVisible = visible
         }
     }
     FunctionPopupList {
@@ -585,7 +603,7 @@ Item {
     Binding {
         target: InputContext.priv
         property: "previewVisible"
-        value: characterPreview.visible || languagePopupListActive
+        value: characterPreview.visible || languagePopupListActive || alternativeKeys.visible
         restoreMode: Binding.RestoreBinding
     }
     Loader {
@@ -599,8 +617,8 @@ Item {
         }
     }
     Loader {
-        id: naviationHighlight
-        objectName: "naviationHighlight"
+        id: navigationHighlight
+        objectName: "navigationHighlight"
         property var highlightItem: {
             if (keyboard.navigationModeActive) {
                 if (languagePopupListActive) {
@@ -619,8 +637,8 @@ Item {
             }
             return keyboard
         }
-        // Note: without "highlightItem.x - highlightItem.x" the binding does not work for alternativeKeys
-        property var highlightItemOffset: highlightItem ? keyboard.mapFromItem(highlightItem, highlightItem.x - highlightItem.x, highlightItem.y - highlightItem.y) : ({x:0, y:0})
+        // Note: the self-subtracting terms create binding dependencies on x, y, width, and height without affecting the result.
+        property var highlightItemOffset: highlightItem ? keyboard.mapFromItem(highlightItem, highlightItem.x - highlightItem.x + highlightItem.width - highlightItem.width, highlightItem.y - highlightItem.y + highlightItem.height - highlightItem.height) : ({x:0, y:0})
         property int moveDuration: !keyboard.noAnimations ? 200 : 0
         property int resizeDuration: !keyboard.noAnimations ? 200 : 0
         z: 2
@@ -631,16 +649,16 @@ Item {
         visible: keyboard.navigationModeActive && highlightItem !== null && highlightItem !== keyboard
         sourceComponent: keyboard.style.navigationHighlight
         Behavior on x {
-            NumberAnimation { id: xAnimation; duration: naviationHighlight.moveDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { id: xAnimation; duration: navigationHighlight.moveDuration; easing.type: Easing.OutCubic }
         }
         Behavior on y {
-            NumberAnimation { id: yAnimation; duration: naviationHighlight.moveDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { id: yAnimation; duration: navigationHighlight.moveDuration; easing.type: Easing.OutCubic }
         }
         Behavior on width {
-            NumberAnimation { id: widthAnimation; duration: naviationHighlight.resizeDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { id: widthAnimation; duration: navigationHighlight.resizeDuration; easing.type: Easing.OutCubic }
         }
         Behavior on height {
-            NumberAnimation { id: heightAnimation; duration: naviationHighlight.resizeDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { id: heightAnimation; duration: navigationHighlight.resizeDuration; easing.type: Easing.OutCubic }
         }
     }
 
@@ -649,12 +667,14 @@ Item {
         objectName: "shadowInputControl"
         z: -3
         anchors.left: parent.left
-        anchors.right: parent.right
         anchors.bottom: wordCandidateView.top
-        height: keyboard.screenHeight -
-                keyboard.height -
-                wordCandidateView.height
-        visible: fullScreenMode && (shadowInputControlVisibleTimer.running || InputContext.animating)
+        width: Math.min(shadowInputControl.contentWidth, parent.width)
+        height: shadowInputControl.contentHeight
+        // An input item with TextInput.NoEcho displays nothing, and so does the
+        // shadow input which mirrors it. Leave it out entirely in that case,
+        // instead of reserving space for a control that cannot show anything.
+        visible: fullScreenMode && keyboard.inputItemEchoMode !== TextInput.NoEcho &&
+                 (shadowInputControlVisibleTimer.running || InputContext.animating)
 
         Connections {
             target: keyboard
@@ -685,7 +705,8 @@ Item {
         inputContext: InputContext.priv.shadow
         anchors.top: shadowInputControl.top
         anchors.left: shadowInputControl.left
-        enabled: keyboard.enabled && fullScreenMode
+        // The handles belong to the shadow input, so they follow its visibility.
+        enabled: keyboard.enabled && fullScreenMode && keyboard.inputItemEchoMode !== TextInput.NoEcho
     }
 
     ListView {
@@ -694,11 +715,11 @@ Item {
         clip: true
         z: -2
         property bool empty: true
-        readonly property bool visibleCondition: (((!wordCandidateView.empty || wordCandidateViewAutoHideTimer.running) &&
-                                                   InputContext.inputEngine.wordCandidateListVisibleHint) || VirtualKeyboardSettings.wordCandidateList.alwaysVisible) &&
-                                                 keyboard.active
+        readonly property bool visibleCondition: keyboard.active && InputContext.inputEngine.wordCandidateListVisibleHint &&
+                                                 (!wordCandidateView.empty || wordCandidateViewAutoHideTimer.running)
+        readonly property bool alwaysVisibleCondition: InputContext.inputEngine.wordCandidateListVisibleHint &&
+                                                       (keyboard.fullScreenMode || VirtualKeyboardSettings.wordCandidateList.alwaysVisible)
         readonly property real visibleYOffset: -height
-        readonly property real currentYOffset: visibleCondition ? visibleYOffset : 0
         height: style ? style.selectionListHeight : 0
         anchors.left: parent.left
         anchors.right: parent.right
@@ -760,7 +781,7 @@ Item {
             },
             State {
                 name: "alwaysVisible"
-                when: keyboard.fullScreenMode || VirtualKeyboardSettings.wordCandidateList.alwaysVisible
+                when: wordCandidateView.alwaysVisibleCondition
                 PropertyChanges {
                     target: wordCandidateView
                     y: wordCandidateView.visibleYOffset
@@ -808,8 +829,10 @@ Item {
                 var multiSoundEffect = __sounds[soundId]
                 if (!multiSoundEffect)
                     multiSoundEffect = register(sound)
-                if (multiSoundEffect)
+                if (multiSoundEffect) {
+                    multiSoundEffect.soundVolume = VirtualKeyboardSettings.convertVolume(VirtualKeyboardSettings.keySoundVolume)
                     multiSoundEffect.play()
+                }
             }
         }
 
@@ -843,9 +866,22 @@ Item {
 
         Item {
             id: keyboardInnerContainer
+            readonly property int calculatedWidth: Math.round(keyboardBackground.width)
+            readonly property int calculatedHeight: Math.round(style.keyboardDesignHeight * calculatedWidth / style.keyboardDesignWidth)
             z: 1
-            width: Math.round(keyboardBackground.width)
-            height: style ? Math.round(style.keyboardDesignHeight * width / style.keyboardDesignWidth) : 0
+            width: {
+                if (style && style.keyboardDesignMaximumHeight > 0 && calculatedHeight > style.keyboardDesignMaximumHeight)
+                    return Math.round(style.keyboardDesignMaximumHeight * style.keyboardDesignWidth / style.keyboardDesignHeight)
+                return calculatedWidth
+            }
+            height: {
+                if (style) {
+                    if (style.keyboardDesignMaximumHeight > 0 && calculatedHeight > style.keyboardDesignMaximumHeight)
+                        return style.keyboardDesignMaximumHeight
+                    return calculatedHeight
+                }
+                return 0
+            }
             anchors.horizontalCenter: parent.horizontalCenter
             LayoutMirroring.enabled: false
             LayoutMirroring.childrenInherit: true
@@ -1041,7 +1077,11 @@ Item {
                                         break
                                     y -= height
                                 }
-                                nextKey = keyOnPoint(x, y)
+                                // Pixel-grid snapping in Qt Quick Layouts can leave a
+                                // sub-pixel gap next to fixed-width keys (QTBUG-146018).
+                                // The gap never contains an integer x, so floor the scan
+                                // position to avoid landing in it.
+                                nextKey = keyOnPoint(Math.floor(x), y)
                                 if (nextKey) {
                                     // Check if key is visible. Only the visible keys have keyPanelDelegate set.
                                     if (nextKey != initialKey && nextKey.hasOwnProperty("keyPanelDelegate") && nextKey.keyPanelDelegate)
@@ -1257,14 +1297,14 @@ Item {
         }
 
         function show(locales, parentItem, customLayoutsOnly) {
+            let currentIndex = -1
             if (!languagePopupList.enabled) {
                 languageListModel.clear()
                 for (var i = 0; i < locales.length; i++) {
                     languageListModel.append({localeName: locales[i].name, displayName: locales[i].locale.nativeLanguageName, localeIndex: locales[i].index})
                     if (locales[i].index === keyboard.localeIndex)
-                        languagePopupList.currentIndex = i
+                        currentIndex = i
                 }
-                languagePopupList.positionViewAtIndex(languagePopupList.currentIndex, ListView.Center)
                 if (parentItem) {
                     languagePopupList.anchors.leftMargin = Qt.binding(function() {
                         const newLeftMargin = Math.round(keyboard.mapFromItem(parentItem, (parentItem.width - languagePopupList.width) / 2, 0).x)
@@ -1277,6 +1317,11 @@ Item {
                 }
             }
             languagePopupList.enabled = true
+            if (currentIndex !== -1) {
+                languagePopupList.currentIndex = currentIndex
+                languagePopupList.forceLayout()
+                languagePopupList.positionViewAtIndex(currentIndex, ListView.Center)
+            }
         }
 
         function hide() {
@@ -1343,6 +1388,13 @@ Item {
                                                wordCandidateContextMenuList.height)
         }
 
+        Loader {
+            sourceComponent: keyboard.style.popupListBackground
+            anchors.fill: wordCandidateContextMenuList
+            z: -1
+            visible: wordCandidateContextMenuList.visible
+        }
+
         ListModel {
             id: wordCandidateContextMenuListModel
 
@@ -1399,6 +1451,7 @@ Item {
             })
 
             wordCandidateContextMenuList.enabled = true
+            wordCandidateContextMenuList.currentIndex = 0
         }
 
         function hide() {

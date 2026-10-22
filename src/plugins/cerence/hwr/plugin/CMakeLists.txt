@@ -12,7 +12,7 @@ qt_internal_add_qml_module(qtvkbcerencehwrplugin
     PLUGIN_TARGET qtvkbcerencehwrplugin
     NO_PLUGIN_OPTIONAL
     DEPENDENCIES
-        QtQuick.VirtualKeyboard/auto
+        QtQuick.VirtualKeyboard.Core/auto
     SOURCES
         cerence_hwr_p.h
         t9writeabstractdictionary_p.h
@@ -157,6 +157,12 @@ endif()
 if (QT_FEATURE_vkb_lang_it_IT)
     list(APPEND qmake_virtualkeyboard_cerence_hwr_layouts_resource_files
         "${VKB_LAYOUTS_BASE}/it_IT/handwriting.fallback"
+    )
+endif()
+
+if (QT_FEATURE_vkb_lang_lv_LV)
+    list(APPEND qmake_virtualkeyboard_cerence_hwr_layouts_resource_files
+        "${VKB_LAYOUTS_BASE}/lv_LV/handwriting.fallback"
     )
 endif()
 

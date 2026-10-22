@@ -1,5 +1,6 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #include "qquickvirtualkeyboardsettings_p.h"
 #include <QtVirtualKeyboard/private/settings_p.h>
@@ -10,7 +11,6 @@
 #include <QDir>
 #include <QRegularExpression>
 #include <QtCore/private/qobject_p.h>
-#include <QtCore/qmutex.h>
 
 QT_BEGIN_NAMESPACE
 namespace QtVirtualKeyboard {
@@ -100,6 +100,7 @@ public:
     \qmltype VirtualKeyboardSettings
     \inqmlmodule QtQuick.VirtualKeyboard.Settings
     \ingroup qtvirtualkeyboard-settings-qml
+    \ingroup qmlclass
     \since QtQuick.VirtualKeyboard 1.2
     \brief Provides settings for virtual keyboard.
 
@@ -132,9 +133,8 @@ QQuickVirtualKeyboardSettings::QQuickVirtualKeyboardSettings(QQmlEngine *engine,
     Settings *settings = Settings::instance();
     if (settings->styleName().isEmpty())
         resetStyle();
-    if (settings->layoutPath().isEmpty())
-        resetLayoutPath();
     connect(settings, SIGNAL(styleChanged()), SIGNAL(styleChanged()));
+    connect(settings, SIGNAL(requestResetStyle()), SLOT(resetStyle()));
     connect(settings, SIGNAL(styleNameChanged()), SIGNAL(styleNameChanged()));
     connect(settings, SIGNAL(localeChanged()), SIGNAL(localeChanged()));
     connect(settings, SIGNAL(availableLocalesChanged()), SIGNAL(availableLocalesChanged()));
@@ -153,30 +153,24 @@ QQuickVirtualKeyboardSettings::QQuickVirtualKeyboardSettings(QQmlEngine *engine,
     connect(settings, SIGNAL(defaultInputMethodDisabledChanged()), SIGNAL(defaultInputMethodDisabledChanged()));
     connect(settings, SIGNAL(defaultDictionaryDisabledChanged()), SIGNAL(defaultDictionaryDisabledChanged()));
     connect(settings, SIGNAL(visibleFunctionKeysChanged()), SIGNAL(visibleFunctionKeysChanged()));
+    connect(settings, &Settings::keySoundVolumeChanged, this, &QQuickVirtualKeyboardSettings::keySoundVolumeChanged);
+    connect(settings, &Settings::arrowKeyNavigationEnabledChanged, this, &QQuickVirtualKeyboardSettings::arrowKeyNavigationEnabledChanged);
 }
 
 /*!
     \internal
-    TODO: Remove this method when QML stops creating separate singleton instances for each version.
  */
-QQuickVirtualKeyboardSettings *QQuickVirtualKeyboardSettings::create(
-        QQmlEngine *qmlEngine, QJSEngine *)
+QQuickVirtualKeyboardSettings *QQuickVirtualKeyboardSettings::create(QQmlEngine *qmlEngine, QJSEngine *)
 {
-    static QMutex mutex;
-    static QHash<QQmlEngine *, QQuickVirtualKeyboardSettings *> instances;
-    QMutexLocker locker(&mutex);
-    QQuickVirtualKeyboardSettings *&instance = instances[qmlEngine];
-    if (instance == nullptr)
-        instance = new QQuickVirtualKeyboardSettings(qmlEngine);
-    return instance;
+    return new QQuickVirtualKeyboardSettings(qmlEngine);
 }
 
 /*!
     \internal
 */
-QString QQuickVirtualKeyboardSettings::style() const
+QUrl QQuickVirtualKeyboardSettings::style() const
 {
-    return Settings::instance()->style();
+    return QUrl{Settings::instance()->style()};
 }
 
 /*!
@@ -227,27 +221,7 @@ void QQuickVirtualKeyboardSettings::setLayoutPath(const QUrl &layoutPath)
 
 void QQuickVirtualKeyboardSettings::resetLayoutPath()
 {
-    Settings *settings = Settings::instance();
-    QUrl layoutPath(QLatin1String(QT_VIRTUALKEYBOARD_DEFAULT_LAYOUTS_DIR));
-    const QString customLayoutPath(QDir::fromNativeSeparators(qEnvironmentVariable("QT_VIRTUALKEYBOARD_LAYOUT_PATH")));
-    if (!customLayoutPath.isEmpty()) {
-        bool found = false;
-        QDir customLayoutDirectory(customLayoutPath);
-        if (customLayoutDirectory.exists()) {
-            found = true;
-            layoutPath = QUrl::fromLocalFile(customLayoutPath);
-        } else {
-            customLayoutDirectory = QDir(QUrl(customLayoutPath).toLocalFile());
-            if (customLayoutDirectory.exists()) {
-                found = true;
-                layoutPath = QUrl(customLayoutPath);
-            }
-        }
-        if (!found) {
-            qWarning() << "WARNING: Cannot assign custom layout path" << customLayoutPath << "- fallback:" << layoutPath;
-        }
-    }
-    settings->setLayoutPath(layoutPath);
+    Settings::instance()->resetLayoutPath();
 }
 
 QString QQuickVirtualKeyboardSettings::locale() const
@@ -258,6 +232,11 @@ QString QQuickVirtualKeyboardSettings::locale() const
 void QQuickVirtualKeyboardSettings::setLocale(const QString &locale)
 {
     Settings::instance()->setLocale(locale);
+}
+
+void QQuickVirtualKeyboardSettings::resetLocale()
+{
+    Settings::instance()->resetLocale();
 }
 
 QStringList QQuickVirtualKeyboardSettings::availableLocales() const
@@ -273,6 +252,11 @@ void QQuickVirtualKeyboardSettings::setActiveLocales(const QStringList &activeLo
 QStringList QQuickVirtualKeyboardSettings::activeLocales() const
 {
     return Settings::instance()->activeLocales();
+}
+
+void QQuickVirtualKeyboardSettings::resetActiveLocales()
+{
+    return Settings::instance()->resetActiveLocales();
 }
 
 QQuickWordCandidateListSettings *QQuickVirtualKeyboardSettings::wordCandidateList() const
@@ -291,6 +275,11 @@ void QQuickVirtualKeyboardSettings::setFullScreenMode(bool fullScreenMode)
     return Settings::instance()->setFullScreenMode(fullScreenMode);
 }
 
+void QQuickVirtualKeyboardSettings::resetFullScreenMode()
+{
+    return Settings::instance()->resetFullScreenMode();
+}
+
 QString QQuickVirtualKeyboardSettings::userDataPath() const
 {
     return Settings::instance()->userDataPath();
@@ -299,6 +288,11 @@ QString QQuickVirtualKeyboardSettings::userDataPath() const
 void QQuickVirtualKeyboardSettings::setUserDataPath(const QString &userDataPath)
 {
     return Settings::instance()->setUserDataPath(userDataPath);
+}
+
+void QQuickVirtualKeyboardSettings::resetUserDataPath()
+{
+    return Settings::instance()->resetUserDataPath();
 }
 
 int QQuickVirtualKeyboardSettings::hwrTimeoutForAlphabetic() const
@@ -311,6 +305,11 @@ void QQuickVirtualKeyboardSettings::setHwrTimeoutForAlphabetic(int hwrTimeoutFor
     return Settings::instance()->setHwrTimeoutForAlphabetic(hwrTimeoutForAlphabetic);
 }
 
+void QQuickVirtualKeyboardSettings::resetHwrTimeoutForAlphabetic()
+{
+    return Settings::instance()->resetHwrTimeoutForAlphabetic();
+}
+
 int QQuickVirtualKeyboardSettings::hwrTimeoutForCjk() const
 {
     return Settings::instance()->hwrTimeoutForCjk();
@@ -319,6 +318,11 @@ int QQuickVirtualKeyboardSettings::hwrTimeoutForCjk() const
 void QQuickVirtualKeyboardSettings::setHwrTimeoutForCjk(int hwrTimeoutForCjk)
 {
     return Settings::instance()->setHwrTimeoutForCjk(hwrTimeoutForCjk);
+}
+
+void QQuickVirtualKeyboardSettings::resetHwrTimeoutForCjk()
+{
+    return Settings::instance()->resetHwrTimeoutForCjk();
 }
 
 Qt::InputMethodHints QQuickVirtualKeyboardSettings::inputMethodHints() const
@@ -331,6 +335,11 @@ void QQuickVirtualKeyboardSettings::setInputMethodHints(const Qt::InputMethodHin
     Settings::instance()->setInputMethodHints(inputMethodHints);
 }
 
+void QQuickVirtualKeyboardSettings::resetInputMethodHints()
+{
+    Settings::instance()->resetInputMethodHints();
+}
+
 bool QQuickVirtualKeyboardSettings::isHandwritingModeDisabled() const
 {
     return Settings::instance()->isHandwritingModeDisabled();
@@ -339,6 +348,11 @@ bool QQuickVirtualKeyboardSettings::isHandwritingModeDisabled() const
 void QQuickVirtualKeyboardSettings::setHandwritingModeDisabled(bool handwritingModeDisabled)
 {
     Settings::instance()->setHandwritingModeDisabled(handwritingModeDisabled);
+}
+
+void QQuickVirtualKeyboardSettings::resetHandwritingModeDisabled()
+{
+    Settings::instance()->resetHandwritingModeDisabled();
 }
 
 bool QQuickVirtualKeyboardSettings::isDefaultInputMethodDisabled() const
@@ -351,6 +365,11 @@ void QQuickVirtualKeyboardSettings::setDefaultInputMethodDisabled(bool defaultIn
     return Settings::instance()->setDefaultInputMethodDisabled(defaultInputMethodDisabled);
 }
 
+void QQuickVirtualKeyboardSettings::resetDefaultInputMethodDisabled()
+{
+    return Settings::instance()->resetDefaultInputMethodDisabled();
+}
+
 bool QQuickVirtualKeyboardSettings::isDefaultDictionaryDisabled() const
 {
     return Settings::instance()->isDefaultDictionaryDisabled();
@@ -359,6 +378,11 @@ bool QQuickVirtualKeyboardSettings::isDefaultDictionaryDisabled() const
 void QQuickVirtualKeyboardSettings::setDefaultDictionaryDisabled(bool defaultDictionaryDisabled)
 {
     return Settings::instance()->setDefaultDictionaryDisabled(defaultDictionaryDisabled);
+}
+
+void QQuickVirtualKeyboardSettings::resetDefaultDictionaryDisabled()
+{
+    return Settings::instance()->resetDefaultDictionaryDisabled();
 }
 
 QtVirtualKeyboard::KeyboardFunctionKeys QQuickVirtualKeyboardSettings::visibleFunctionKeys() const
@@ -371,6 +395,11 @@ void QQuickVirtualKeyboardSettings::setVisibleFunctionKeys(QtVirtualKeyboard::Ke
     Settings::instance()->setVisibleFunctionKeys(newVisibleFunctionKeys);
 }
 
+void QQuickVirtualKeyboardSettings::resetVisibleFunctionKeys()
+{
+    return Settings::instance()->resetVisibleFunctionKeys();
+}
+
 bool QQuickVirtualKeyboardSettings::closeOnReturn() const
 {
     return Settings::instance()->closeOnReturn();
@@ -379,6 +408,51 @@ bool QQuickVirtualKeyboardSettings::closeOnReturn() const
 void QQuickVirtualKeyboardSettings::setCloseOnReturn(bool closeOnReturn)
 {
     Settings::instance()->setCloseOnReturn(closeOnReturn);
+}
+
+void QQuickVirtualKeyboardSettings::resetCloseOnReturn()
+{
+    Settings::instance()->resetCloseOnReturn();
+}
+
+qreal QQuickVirtualKeyboardSettings::keySoundVolume() const
+{
+    return Settings::instance()->keySoundVolume();
+}
+
+void QQuickVirtualKeyboardSettings::setKeySoundVolume(qreal volume)
+{
+    Settings::instance()->setKeySoundVolume(volume);
+}
+
+void QQuickVirtualKeyboardSettings::resetKeySoundVolume()
+{
+    Settings::instance()->resetKeySoundVolume();
+}
+
+bool QQuickVirtualKeyboardSettings::arrowKeyNavigationEnabled() const
+{
+    return Settings::instance()->arrowKeyNavigationEnabled();
+}
+
+void QQuickVirtualKeyboardSettings::setArrowKeyNavigationEnabled(bool arrowKeyNavigationEnabled)
+{
+    Settings::instance()->setArrowKeyNavigationEnabled(arrowKeyNavigationEnabled);
+}
+
+void QQuickVirtualKeyboardSettings::resetArrowKeyNavigationEnabled()
+{
+    Settings::instance()->resetArrowKeyNavigationEnabled();
+}
+
+/*!
+    \internal
+*/
+qreal QQuickVirtualKeyboardSettings::convertVolume(qreal volume) const
+{
+    // Equivalent to QAudio::convertVolume(volume / 100, QtAudio::LogarithmicVolumeScale, QtAudio::LinearVolumeScale)
+    constexpr qreal LOG100 = 4.60517018599;
+    return 1 - std::exp(-(volume / 100) * LOG100);
 }
 
 void QQuickVirtualKeyboardSettings::resetStyle()
@@ -390,7 +464,7 @@ void QQuickVirtualKeyboardSettings::resetStyle()
     QString customStyleName = QString::fromLatin1(qgetenv("QT_VIRTUALKEYBOARD_STYLE"));
     if (!customStyleName.isEmpty()) {
         bool found = false;
-        QRegularExpression styleNameValidator(QLatin1String("\\A(?:\\w+)\\z"));
+        static const QRegularExpression styleNameValidator(QLatin1String("\\A(?:\\w+)\\z"));
         QRegularExpressionMatch match = styleNameValidator.match(customStyleName);
         if (match.hasMatch()) {
             QString customStyle = d->stylePath(customStyleName);
@@ -474,6 +548,9 @@ void QQuickVirtualKeyboardSettings::resetStyle()
     focused input field to the fullscreen input field located at the top of the
     keyboard.
 
+    \image shadow-input.png {Keyboard in fullscreen mode with the focused
+           field contents replicated in a bar above the keys}
+
     For example, to activate the fullscreen mode when the screen aspect ratio
     is greater than 16:9:
 
@@ -488,7 +565,7 @@ void QQuickVirtualKeyboardSettings::resetStyle()
 
 /*!
     \qmlproperty bool VirtualKeyboardSettings::userDataPath
-    \since QtQuick.VirtualKeyboard.Settings 6.1
+    \since 6.1
 
     This property sets the user data path for the virtual keyboard and its plugins.
 
@@ -505,7 +582,7 @@ void QQuickVirtualKeyboardSettings::resetStyle()
 
 /*!
     \qmlproperty bool VirtualKeyboardSettings::hwrTimeoutForAlphabetic
-    \since QtQuick.VirtualKeyboard.Settings 6.1
+    \since 6.1
 
     This property sets the handwriting recognition timeout for alphabetical languages.
 
@@ -514,7 +591,7 @@ void QQuickVirtualKeyboardSettings::resetStyle()
 
 /*!
     \qmlproperty bool VirtualKeyboardSettings::hwrTimeoutForCjk
-    \since QtQuick.VirtualKeyboard.Settings 6.1
+    \since 6.1
 
     This property sets the handwriting recognition timeout for Chinese / Japanese / Korean languages.
 
@@ -523,7 +600,7 @@ void QQuickVirtualKeyboardSettings::resetStyle()
 
 /*!
     \qmlproperty int VirtualKeyboardSettings::inputMethodHints
-    \since QtQuick.VirtualKeyboard.Settings 6.1
+    \since 6.1
 
     This property allows to set persistent input method hints.
 
@@ -534,7 +611,7 @@ void QQuickVirtualKeyboardSettings::resetStyle()
 
 /*!
     \qmlproperty bool VirtualKeyboardSettings::handwritingModeDisabled
-    \since QtQuick.VirtualKeyboard.Settings 6.1
+    \since 6.1
 
     This property allows to disable handwriting input mode, if it is
     otherwise available in the system.
@@ -546,7 +623,7 @@ void QQuickVirtualKeyboardSettings::resetStyle()
 
 /*!
     \qmlproperty bool VirtualKeyboardSettings::defaultInputMethodDisabled
-    \since QtQuick.VirtualKeyboard.Settings 6.1
+    \since 6.1
 
     This property disables the default input method. The purpose of this setting is to be able to
     override the default input method with the plain input method, disabling its functionality.
@@ -554,7 +631,7 @@ void QQuickVirtualKeyboardSettings::resetStyle()
 
 /*!
     \qmlproperty bool VirtualKeyboardSettings::defaultDictionaryDisabled
-    \since QtQuick.VirtualKeyboard.Settings 6.1
+    \since 6.1
 
     This property disables the default dictionary. The purpose of this setting is to be able to
     use a custom dictionary only instead of the standard dictionary.
@@ -562,7 +639,7 @@ void QQuickVirtualKeyboardSettings::resetStyle()
 
 /*!
     \qmlproperty enumeration VirtualKeyboardSettings::visibleFunctionKeys
-    \since QtQuick.VirtualKeyboard.Settings 6.6
+    \since 6.6
 
     This setting adjusts the visibility of specific function keys in the keyboard layout, allowing
     them to be either displayed or hidden. When a function key is not visible, its functionality
@@ -582,12 +659,26 @@ void QQuickVirtualKeyboardSettings::resetStyle()
 
 /*!
     \qmlproperty bool VirtualKeyboardSettings::closeOnReturn
-    \since QtQuick.VirtualKeyboard.Settings 6.8
+    \since 6.8
 
     This property enables hiding of virtual keyboard.
 
     When this property is set to \c true, the virtual keyboard is hidden when \l Qt::Key_Enter
     or \l Qt::Key_Return key released. The default is \c false.
+*/
+
+/*!
+    \qmlproperty real VirtualKeyboardSettings::keySoundVolume
+    \since 6.9
+
+    This property holds the keysound's volume level. The level is in the range [0,1]
+*/
+
+/*!
+    \qmlproperty bool VirtualKeyboardSettings::arrowKeyNavigationEnabled
+    \since 6.11
+
+    Use this property to enable or disable arrow key navigation.
 */
 
 /*!
@@ -645,6 +736,11 @@ void QQuickWordCandidateListSettings::setAutoHideDelay(int autoHideDelay)
     Settings::instance()->setWclAutoHideDelay(autoHideDelay);
 }
 
+void QQuickWordCandidateListSettings::resetAutoHideDelay()
+{
+    Settings::instance()->resetWclAutoHideDelay();
+}
+
 bool QQuickWordCandidateListSettings::alwaysVisible() const
 {
     return Settings::instance()->wclAlwaysVisible();
@@ -655,6 +751,11 @@ void QQuickWordCandidateListSettings::setAlwaysVisible(bool alwaysVisible)
     Settings::instance()->setWclAlwaysVisible(alwaysVisible);
 }
 
+void QQuickWordCandidateListSettings::resetAlwaysVisible()
+{
+    Settings::instance()->resetWclAlwaysVisible();
+}
+
 bool QQuickWordCandidateListSettings::autoCommitWord() const
 {
     return Settings::instance()->wclAutoCommitWord();
@@ -663,6 +764,11 @@ bool QQuickWordCandidateListSettings::autoCommitWord() const
 void QQuickWordCandidateListSettings::setAutoCommitWord(bool autoCommitWord)
 {
     Settings::instance()->setWclAutoCommitWord(autoCommitWord);
+}
+
+void QQuickWordCandidateListSettings::resetAutoCommitWord()
+{
+    Settings::instance()->resetWclAutoCommitWord();
 }
 
 } // namespace QtVirtualKeyboard

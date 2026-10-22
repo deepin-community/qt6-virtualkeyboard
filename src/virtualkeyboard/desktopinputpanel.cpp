@@ -1,5 +1,6 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #include <QtVirtualKeyboard/private/qvirtualkeyboard_global_p.h>
 #include <QtVirtualKeyboard/private/desktopinputpanel_p.h>
@@ -47,6 +48,8 @@ public:
     }
 
     QScopedPointer<InputView> view;
+    QMetaObject::Connection m_focusWindowVisibleConnection;
+    QMetaObject::Connection m_focusWindowScreenConnection;
     QPointer<QScreen> m_screen;
     QRectF keyboardRect;
     QRectF previewRect;
@@ -127,7 +130,11 @@ void DesktopInputPanel::createView()
             break;
         }
         d->view->setColor(QColor(Qt::transparent));
+#if defined(QT_STATIC)
         d->view->setSource(QUrl(QLatin1String("qrc:///qt-project.org/imports/QtQuick/VirtualKeyboard/InputPanel.qml")));
+#else
+        d->view->loadFromModule("QtQuick.VirtualKeyboard", "InputPanel");
+#endif
         if (QGuiApplication *app = qGuiApp)
             connect(app, SIGNAL(aboutToQuit()), SLOT(destroyView()));
     }
@@ -166,12 +173,16 @@ void DesktopInputPanel::repositionView(const QRect &rect)
 
 void DesktopInputPanel::focusWindowChanged(QWindow *focusWindow)
 {
-    disconnect(this, SLOT(focusWindowVisibleChanged(bool)));
-    disconnect(this, SLOT(screenChanged(QScreen*)));
+    Q_D(DesktopInputPanel);
+    disconnect(d->m_focusWindowVisibleConnection);
+    disconnect(d->m_focusWindowScreenConnection);
     if (focusWindow) {
-        connect(focusWindow, &QWindow::visibleChanged, this, &DesktopInputPanel::focusWindowVisibleChanged);
-        connect(focusWindow, &QWindow::screenChanged, this, &DesktopInputPanel::screenChanged,
-                Qt::UniqueConnection);
+        d->m_focusWindowVisibleConnection =
+                connect(focusWindow, &QWindow::visibleChanged,
+                        this, &DesktopInputPanel::focusWindowVisibleChanged);
+        d->m_focusWindowScreenConnection =
+                connect(focusWindow, &QWindow::screenChanged,
+                        this, &DesktopInputPanel::screenChanged);
         screenChanged(focusWindow->screen());
     }
 }

@@ -1,5 +1,6 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #ifndef QVIRTUALKEYBOARDINPUTCONTEXT_H
 #define QVIRTUALKEYBOARDINPUTCONTEXT_H
@@ -50,9 +51,7 @@ class Q_VIRTUALKEYBOARD_EXPORT QVirtualKeyboardInputContext : public QObject
     Q_PROPERTY(QVirtualKeyboardObserver *keyboardObserver READ keyboardObserver CONSTANT REVISION(6, 1))
     Q_MOC_INCLUDE("qvirtualkeyboardinputengine.h")
     Q_MOC_INCLUDE("qvirtualkeyboardinputcontext_p.h")
-
-    // The QML macros are unused for now, until we can move the QML_NAMED_ELEMENT back here.
-    // QML_SINGLETON generates some code that might or might not emit symbols on some platforms.
+    QML_NAMED_ELEMENT(InputContext)
     QML_SINGLETON
     QML_ADDED_IN_VERSION(1, 0)
     QML_EXTRA_VERSION(2, 0)

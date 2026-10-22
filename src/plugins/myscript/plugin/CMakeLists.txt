@@ -27,7 +27,7 @@ qt_internal_add_qml_module(qtvkbmyscriptplugin
     PLUGIN_TARGET qtvkbmyscriptplugin
     NO_PLUGIN_OPTIONAL
     DEPENDENCIES
-        QtQuick.VirtualKeyboard/auto
+        QtQuick.VirtualKeyboard.Core/auto
     SOURCES
         ${MyScript_ROOT_DIR}/voim/api/c/examples/common/Properties.c
         myscriptinputmethod.cpp myscriptinputmethod_p.h
@@ -204,6 +204,12 @@ endif()
 if (QT_FEATURE_vkb_lang_it_IT)
     list(APPEND qmake_virtualkeyboard_myscript_layouts_resource_files
         "${VKB_LAYOUTS_BASE}/it_IT/handwriting.fallback"
+    )
+endif()
+
+if (QT_FEATURE_vkb_lang_lv_LV)
+    list(APPEND qmake_virtualkeyboard_myscript_layouts_resource_files
+        "${VKB_LAYOUTS_BASE}/lv_LV/handwriting.fallback"
     )
 endif()
 

@@ -1,8 +1,9 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
-#include "pinyininputmethod_p.h"
-#include "pinyindecoderservice_p.h"
+#include "pinyininputmethod.h"
+#include "pinyindecoderservice.h"
 #include <QtVirtualKeyboard/qvirtualkeyboardinputcontext.h>
 
 #include <QLoggingCategory>
@@ -170,7 +171,7 @@ public:
             }
         } else {
             if (totalChoicesNum > 1) {
-                result = pinyinDecoderService->chooceCandidate(candId);
+                result = pinyinDecoderService->chooseCandidate(candId);
             } else {
                 QString resultStr;
                 if (totalChoicesNum == 1) {
@@ -408,6 +409,12 @@ bool PinyinInputMethod::keyEvent(Qt::Key key, const QString &text, Qt::KeyboardM
             if (d->removeSpellingChar()) {
                 d->chooseAndUpdate(-1);
                 return true;
+            }
+        } else if (key >= Qt::Key_0 && key <= Qt::Key_9) {
+            if (d->state != PinyinInputMethodPrivate::Predict && d->candidatesCount() > 0) {
+                QString surface = d->surface;
+                d->resetToIdleState();
+                inputContext()->commit(surface);
             }
         } else if (!text.isEmpty()) {
             d->chooseAndFinish();

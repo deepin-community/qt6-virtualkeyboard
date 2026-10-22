@@ -1,5 +1,6 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #include <QtVirtualKeyboard/qvirtualkeyboardtrace.h>
 #include <QtCore/private/qobject_p.h>
@@ -371,7 +372,7 @@ void QVirtualKeyboardTrace::setOpacity(qreal opacity)
     destroying the trace object, for example, to indicate that the trace has
     been processed.
 
-    \since QtQuick.VirtualKeyboard.Styles 6.1
+    \since 6.1
 */
 
 /*! Starts a timer to set opacity to zero after \a delayMs. If called again
@@ -381,7 +382,7 @@ void QVirtualKeyboardTrace::setOpacity(qreal opacity)
     destroying the trace object, for example, to indicate that the trace has
     been processed.
 
-    \since QtQuick.VirtualKeyboard.Styles 6.1
+    \since 6.1
 */
 
 void QVirtualKeyboardTrace::startHideTimer(int delayMs)
@@ -458,7 +459,7 @@ void QVirtualKeyboardTrace::timerEvent(QTimerEvent *event)
     whose \c canceled property set to true.
 */
 
-/*! \qmlproperty qreal Trace::opacity
+/*! \qmlproperty real Trace::opacity
     \since QtQuick.VirtualKeyboard 2.4
 
     This property defines how opaque the Trace is.

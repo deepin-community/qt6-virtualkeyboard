@@ -8,7 +8,7 @@ qt_internal_add_qml_module(qtvkbexamplehwrplugin
     PLUGIN_TARGET qtvkbexamplehwrplugin
     NO_PLUGIN_OPTIONAL
     DEPENDENCIES
-        QtQuick.VirtualKeyboard/auto
+        QtQuick.VirtualKeyboard.Core/auto
     SOURCES
         examplehwrinputmethod.cpp examplehwrinputmethod_p.h
     DEFINES
@@ -145,6 +145,12 @@ endif()
 if (QT_FEATURE_vkb_lang_it_IT)
     list(APPEND qt_virtualkeyboard_example_hwr_layouts_resource_files
         "${VKB_LAYOUTS_BASE}/it_IT/handwriting.fallback"
+    )
+endif()
+
+if (QT_FEATURE_vkb_lang_lv_LV)
+    list(APPEND qt_virtualkeyboard_example_hwr_layouts_resource_files
+        "${VKB_LAYOUTS_BASE}/lv_LV/handwriting.fallback"
     )
 endif()
 

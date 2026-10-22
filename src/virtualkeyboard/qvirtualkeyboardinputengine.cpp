@@ -1,5 +1,6 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #include <QtVirtualKeyboard/qvirtualkeyboardinputengine.h>
 #include <QtVirtualKeyboard/qvirtualkeyboardinputcontext.h>
@@ -8,6 +9,7 @@
 #include <QtVirtualKeyboard/private/fallbackinputmethod_p.h>
 #include <QtVirtualKeyboard/qvirtualkeyboardtrace.h>
 #include <QtVirtualKeyboard/private/virtualkeyboarddebug_p.h>
+#include <QtVirtualKeyboard/private/recursivemethodguard_p.h>
 
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -34,7 +36,7 @@ public:
         previousKey(Qt::Key_unknown),
         repeatTimer(0),
         repeatCount(0),
-        recursiveMethodLock(0)
+        recursiveMethodLock(false)
     {
     }
 
@@ -75,26 +77,7 @@ public:
     Qt::Key previousKey;
     int repeatTimer;
     int repeatCount;
-    int recursiveMethodLock;
-};
-
-class RecursiveMethodGuard
-{
-public:
-    explicit RecursiveMethodGuard(int &ref) : m_ref(ref)
-    {
-        m_ref++;
-    }
-    ~RecursiveMethodGuard()
-    {
-        m_ref--;
-    }
-    bool locked() const
-    {
-        return m_ref > 1;
-    }
-private:
-    int &m_ref;
+    bool recursiveMethodLock;
 };
 
 /*!
@@ -796,6 +779,7 @@ void QVirtualKeyboardInputEngine::timerEvent(QTimerEvent *timerEvent)
         \li \c InputEngine.InputMode.Thai Thai input mode.
         \li \c InputEngine.InputMode.Stroke Stroke input mode for Chinese.
         \li \c InputEngine.InputMode.Romaji Romaji input mode for Japanese.
+        \li \c InputEngine.InputMode.HiraganaFlick flick input mode for Japanese.
     \endlist
 */
 
@@ -883,6 +867,8 @@ void QVirtualKeyboardInputEngine::timerEvent(QTimerEvent *timerEvent)
            Stroke input mode for Chinese.
     \value Romaji
            Romaji input mode for Japanese.
+    \value HiraganaFlick
+           Flick input mode for Japanese.
 */
 
 /*!

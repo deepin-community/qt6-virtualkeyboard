@@ -1,4 +1,11 @@
+usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboardQml/QtVirtualKeyboardQml
+usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboardQml/QtVirtualKeyboardQmlDepends
+usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboardQml/QtVirtualKeyboardQmlVersion
+usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboardQml/qtvirtualkeyboardqml-config.h
+usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboardQml/qtvirtualkeyboardqmlexports.h
+usr/include/${DEB_HOST_MULTIARCH}/qt6/QtVirtualKeyboardQml/qtvirtualkeyboardqmlversion.h
 usr/lib/${DEB_HOST_MULTIARCH}/libQt6HunspellInputMethod.so.*
+usr/lib/${DEB_HOST_MULTIARCH}/libQt6VirtualKeyboardQml.so.*
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Components/AlternativeKeys.qml
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Components/BackspaceKey.qml
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Components/BaseKey.qml
@@ -33,6 +40,9 @@ usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Components/WordCan
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Components/libqtvkbcomponentsplugin.so
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Components/qmldir
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Components/qtvkbcomponentsplugin.qmltypes
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Core/libvirtualkeyboardplugin.so
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Core/plugins.qmltypes
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Core/qmldir
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/EnterKey.qml
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/HandwritingInputPanel.qml
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/InputPanel.qml
@@ -67,6 +77,6 @@ usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Styles/TraceUtils.
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Styles/libqtvkbstylesplugin.so
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Styles/plugins.qmltypes
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/Styles/qmldir
+usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/VirtualKeyboardQml.qmltypes
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/libqtvkbplugin.so
-usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/plugins.qmltypes
 usr/lib/${DEB_HOST_MULTIARCH}/qt6/qml/QtQuick/VirtualKeyboard/qmldir
