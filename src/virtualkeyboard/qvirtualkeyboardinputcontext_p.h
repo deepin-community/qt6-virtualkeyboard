@@ -1,5 +1,6 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #ifndef QVIRTUALKEYBOARDINPUTCONTEXT_P_H
 #define QVIRTUALKEYBOARDINPUTCONTEXT_P_H
@@ -163,9 +164,7 @@ private:
     bool selectionControlVisible;
     bool anchorRectIntersectsClipRect;
     bool cursorRectIntersectsClipRect;
-#ifdef QT_VIRTUALKEYBOARD_ARROW_KEY_NAVIGATION
     QSet<int> activeNavigationKeys;
-#endif
     QSet<quint32> activeKeys;
     QtVirtualKeyboard::ShadowInputContext _shadow;
     QPointer<QVirtualKeyboardObserver> keyboardObserver;
@@ -196,23 +195,6 @@ private:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QVirtualKeyboardInputContextPrivate::StateFlags)
-
-/*!
-    TODO: Remove this type and move the registration back into QVirtualKeyboardInputContext when
-          QML stops creating separate singleton instances for each version.
- */
-struct QVirtualKeyboardInputContextForeign
-{
-    Q_GADGET
-    QML_FOREIGN(QVirtualKeyboardInputContext)
-    QML_NAMED_ELEMENT(InputContext)
-    QML_SINGLETON
-    QML_ADDED_IN_VERSION(1, 0)
-    QML_EXTRA_VERSION(2, 0)
-
-public:
-    static QVirtualKeyboardInputContext *create(QQmlEngine *qmlEngine, QJSEngine *);
-};
 
 QT_END_NAMESPACE
 

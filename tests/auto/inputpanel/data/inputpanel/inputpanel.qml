@@ -18,6 +18,7 @@ InputPanel {
 
     property var testcase
     property var virtualKeyPressPoint: null
+    property bool noAnimations: true
     readonly property int cursorPosition: InputContext.cursorPosition
     readonly property string preeditText: InputContext.preeditText
     readonly property string surroundingText: InputContext.surroundingText
@@ -27,6 +28,7 @@ InputPanel {
     readonly property string defaultLocale: VirtualKeyboardSettings.locale
     readonly property var availableLocales: VirtualKeyboardSettings.availableLocales
     readonly property var activeLocales: VirtualKeyboardSettings.activeLocales
+    readonly property bool arrowKeyNavigationEnabled: VirtualKeyboardSettings.arrowKeyNavigationEnabled
     readonly property int inputMode: InputContext.inputEngine.inputMode
     readonly property var inputMethod: InputContext.inputEngine.inputMethod
     readonly property bool handwritingMode: keyboard.handwritingMode
@@ -34,7 +36,7 @@ InputPanel {
     readonly property MultiPointTouchArea keyboardInputArea: keyboard.keyboardInputArea
     readonly property CharacterPreviewBubble characterPreviewBubble: keyboard.characterPreview
     readonly property AlternativeKeys alternativeKeys: keyboard.alternativeKeys
-    readonly property Loader naviationHighlight: keyboard.naviationHighlight
+    readonly property Loader navigationHighlight: keyboard.navigationHighlight
     readonly property ListView wordCandidateView: keyboard.wordCandidateView
     readonly property Item wordCandidateContextMenu: keyboard.wordCandidateContextMenu
     readonly property ShadowInputControl shadowInputControl: keyboard.shadowInputControl
@@ -56,6 +58,7 @@ InputPanel {
     property alias dragSymbolModeSpy: dragSymbolModeSpy
     property alias styleSpy: styleSpy
     property alias soundEffectSpy: soundEffectSpy
+    property alias keySoundVolumeSpy: keySoundVolumeSpy
     property alias inputMethodResultSpy: inputMethodResultSpy
     property alias wordCandidateListChangedSpy: wordCandidateListChangedSpy
     property alias wordCandidateListItemSelectedSpy: wordCandidateListItemSelectedSpy
@@ -65,7 +68,6 @@ InputPanel {
     property alias shiftStateSpy: shiftStateSpy
     property alias shadowInputControlVisibleSpy: shadowInputControlVisibleSpy
     property alias externalLanguageSwitchSpy: externalLanguageSwitchSpy
-
     signal inputMethodResult(var text)
 
     LayoutMirroring.childrenInherit: true
@@ -138,6 +140,12 @@ InputPanel {
     }
 
     SignalSpy {
+        id: keySoundVolumeSpy
+        target: VirtualKeyboardSettings
+        signalName: "keySoundVolumeChanged"
+    }
+
+    SignalSpy {
         id: inputMethodResultSpy
         target: inputPanel
         signalName: "inputMethodResult"
@@ -201,7 +209,7 @@ InputPanel {
     Binding {
         target: keyboard
         property: "noAnimations"
-        value: true
+        value: inputPanel.noAnimations
     }
 
     // Reduce press and hold delay to avoid unnecessary wait during tests
@@ -256,6 +264,11 @@ InputPanel {
     }
 
     function setVisibleFunctionKeys(functionKeyNames) {
+        if (functionKeyNames === undefined) {
+            VirtualKeyboardSettings.visibleFunctionKeys = undefined
+            return
+        }
+
         let functionKeys = QtVirtualKeyboard.KeyboardFunctionKeys.None
         for (const functionKeyName of functionKeyNames) {
             functionKeys |= mapKeyboardFunctionKey(functionKeyName)
@@ -320,6 +333,8 @@ InputPanel {
             return InputEngine.InputMode.Stroke
         else if (inputModeName === "Romaji")
             return InputEngine.InputMode.Romaji
+        else if (inputModeName === "HiraganaFlick")
+            return InputEngine.InputMode.HiraganaFlick
         else
             return -1
     }
@@ -360,6 +375,7 @@ InputPanel {
         testcase.verify(InputEngine.InputMode.Thai !== undefined)
         testcase.verify(InputEngine.InputMode.Stroke !== undefined)
         testcase.verify(InputEngine.InputMode.Romaji !== undefined)
+        testcase.verify(InputEngine.InputMode.HiraganaFlick !== undefined)
         testcase.verify(InputEngine.PatternRecognitionMode.None !== undefined)
         testcase.verify(InputEngine.PatternRecognitionMode.PatternRecognitionDisabled !== undefined)
         testcase.verify(InputEngine.PatternRecognitionMode.Handwriting !== undefined)
@@ -435,10 +451,22 @@ InputPanel {
             testcase.mousePress(inputPanel, virtualKeyPressPoint.x, virtualKeyPressPoint.y)
             testcase.wait(1)
             if (alternativeKey) {
-                alternativeKeysSpy.wait()
-                var keyIndex = keyObj.effectiveAlternativeKeys.indexOf(key.toLowerCase())
-                var itemX = keyIndex * keyboard.style.alternateKeysListItemWidth + keyboard.style.alternateKeysListItemWidth / 2
-                virtualKeyPressPoint.x = inputPanel.mapFromItem(alternativeKeys.listView, itemX, 0).x
+                if (keyObj.keyType === QtVirtualKeyboard.KeyType.FlickKey) {
+                    const flickRadius = (keyObj.width / 2 + 1)
+                    if (key === keyObj.flickLeft)
+                        virtualKeyPressPoint.x -= flickRadius
+                    else if (key === keyObj.flickRight)
+                        virtualKeyPressPoint.x += flickRadius
+                    else if (key === keyObj.flickTop)
+                        virtualKeyPressPoint.y -= flickRadius
+                    else if (key === keyObj.flickBottom)
+                        virtualKeyPressPoint.y += flickRadius
+                } else {
+                    alternativeKeysSpy.wait()
+                    var keyIndex = keyObj.effectiveAlternativeKeys.indexOf(key.toLowerCase())
+                    var itemX = keyIndex * keyboard.style.alternateKeysListItemWidth + keyboard.style.alternateKeysListItemWidth / 2
+                    virtualKeyPressPoint.x = inputPanel.mapFromItem(alternativeKeys.listView, itemX, 0).x
+                }
                 testcase.mouseMove(inputPanel, virtualKeyPressPoint.x, virtualKeyPressPoint.y)
                 testcase.wait(1)
             }
@@ -539,18 +567,18 @@ InputPanel {
 
     function navigateToKeyOnPoint(point) {
         activateNavigationKeyMode()
-        if (inputPanel.naviationHighlight.visible) {
+        if (inputPanel.navigationHighlight.visible) {
             while (true) {
-                var navigationPoint = inputPanel.mapToItem(inputPanel.naviationHighlight, point.x, point.y)
-                if (inputPanel.naviationHighlight.contains(Qt.point(navigationPoint.x, navigationPoint.y)))
+                var navigationPoint = inputPanel.mapToItem(inputPanel.navigationHighlight, point.x, point.y)
+                if (inputPanel.navigationHighlight.contains(Qt.point(navigationPoint.x, navigationPoint.y)))
                     return true
-                if (inputPanel.naviationHighlight.y > point.y)
+                if (inputPanel.navigationHighlight.y > point.y)
                     emulateNavigationKeyClick(Qt.Key_Up)
-                else if (inputPanel.naviationHighlight.y + inputPanel.naviationHighlight.height < point.y)
+                else if (inputPanel.navigationHighlight.y + inputPanel.navigationHighlight.height < point.y)
                     emulateNavigationKeyClick(Qt.Key_Down)
-                else if (inputPanel.naviationHighlight.x > point.x)
+                else if (inputPanel.navigationHighlight.x > point.x)
                     emulateNavigationKeyClick(Qt.Key_Left)
-                else if (inputPanel.naviationHighlight.x + inputPanel.naviationHighlight.width < point.x)
+                else if (inputPanel.navigationHighlight.x + inputPanel.navigationHighlight.width < point.x)
                     emulateNavigationKeyClick(Qt.Key_Right)
             }
         }
@@ -600,14 +628,18 @@ InputPanel {
         return multiLayoutKeyActionHelper(key, navigationKeyClickOnCurrentLayout)
     }
 
+    function setArrowKeyNavigationEnabled(arrowKeyNavigationEnabled) {
+        VirtualKeyboardSettings.arrowKeyNavigationEnabled = arrowKeyNavigationEnabled
+    }
+
     function activateNavigationKeyMode() {
-        if (!inputPanel.naviationHighlight.visible) {
+        if (!inputPanel.navigationHighlight.visible) {
             emulateNavigationKeyClick(Qt.Key_Right)
-            if (inputPanel.naviationHighlight.visible) {
+            if (inputPanel.navigationHighlight.visible) {
                 testcase.wait(1)
             }
         }
-        return inputPanel.naviationHighlight.visible
+        return inputPanel.navigationHighlight.visible
     }
 
     function toggleShift() {
@@ -768,5 +800,13 @@ InputPanel {
 
     function setCloseOnReturn(enabled) {
         VirtualKeyboardSettings.closeOnReturn = enabled
+    }
+
+    function keySoundVolume() {
+        return VirtualKeyboardSettings.keySoundVolume
+    }
+
+    function setKeySoundVolume(volume) {
+        VirtualKeyboardSettings.keySoundVolume = volume
     }
 }

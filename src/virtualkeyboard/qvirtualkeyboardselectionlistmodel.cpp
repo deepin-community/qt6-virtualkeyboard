@@ -1,5 +1,6 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #include <QtVirtualKeyboard/qvirtualkeyboardselectionlistmodel.h>
 #include <QtVirtualKeyboard/qvirtualkeyboardabstractinputmethod.h>
@@ -144,7 +145,7 @@ void QVirtualKeyboardSelectionListModel::setDataSource(QVirtualKeyboardAbstractI
     Q_D(QVirtualKeyboardSelectionListModel);
     if (d->dataSource) {
         disconnect(this, SLOT(selectionListChanged(Type)));
-        disconnect(this, SLOT(selectionListActiveItemChanged(Type, int)));
+        disconnect(this, SLOT(selectionListActiveItemChanged(Type,int)));
         disconnect(this, SLOT(dataSourceDestroyed()));
     }
     d->type = type;
@@ -209,7 +210,7 @@ QHash<int,QByteArray> QVirtualKeyboardSelectionListModel::roleNames() const
     \property QVirtualKeyboardSelectionListModel::count
     \internal
 */
-/*
+/*!
     \internal
 */
 int QVirtualKeyboardSelectionListModel::count() const

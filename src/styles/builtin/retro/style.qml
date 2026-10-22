@@ -763,7 +763,7 @@ KeyboardStyle {
             border.right: 79
             border.bottom: 79
             horizontalTileMode: BorderImage.Stretch
-            scale: parent.height / sourceSize.height
+            scale: parent.height > 0 && sourceSize.height > 0 ? parent.height / sourceSize.height : 1
         }
         Image {
             visible: currentItemOffset !== undefined
@@ -983,7 +983,7 @@ KeyboardStyle {
             font {
                 family: fontFamily
                 weight: Font.Normal
-                pixelSize: Qt.inputMethod.cursorRectangle.height * 0.8
+                pixelSize: InputMethod.cursorRectangle.height * 0.8
             }
             function decorateText(text, wordCompletionLength) {
                 if (wordCompletionLength > 0) {
@@ -1129,25 +1129,32 @@ KeyboardStyle {
         source: resourcePrefix + "images/selectionhandle-bottom.svg"
     }
 
-    fullScreenInputContainerBackground: Rectangle {
-        color: "#FFF"
+    fullScreenInputContainerBackground: Item {
+        clip: true
+        Rectangle {
+            color: "#222222"
+            width: parent.width
+            height: parent.height
+        }
     }
 
-    fullScreenInputBackground: Rectangle {
-        color: "#FFF"
+    fullScreenInputBackground: Item {
     }
 
-    fullScreenInputMargins: Math.round(15 * scaleHint)
+    fullScreenInputMargins: Math.round(30 * scaleHint)
 
-    fullScreenInputPadding: Math.round(30 * scaleHint)
+    fullScreenInputPadding: 0
 
     fullScreenInputCursor: Rectangle {
         width: 1
-        color: "#000"
+        color: "white"
         visible: parent.blinkStatus
     }
 
-    fullScreenInputFont.pixelSize: 58 * scaleHint
+    fullScreenInputColor: "white"
+
+    fullScreenInputFont.pixelSize: 44 * scaleHint
+    fullScreenInputFont.family: fontFamily
 
     fullScreenInputPasswordCharacter: "*"
 

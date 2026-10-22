@@ -1,5 +1,6 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #include <QtVirtualKeyboard/private/qvirtualkeyboardinputcontext_p.h>
 #include <QtVirtualKeyboard/private/platforminputcontext_p.h>
@@ -19,7 +20,6 @@
 #include <QtQuick/qquickwindow.h>
 #include <QtGui/qpa/qplatformintegration.h>
 #include <QtGui/private/qguiapplication_p.h>
-#include <QQmlEngine>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,10 +56,8 @@ QVirtualKeyboardInputContextPrivate::QVirtualKeyboardInputContextPrivate(QVirtua
     cursorRectangle(),
     selectionControlVisible(false),
     anchorRectIntersectsClipRect(false),
-    cursorRectIntersectsClipRect(false)
-#ifdef QT_VIRTUALKEYBOARD_ARROW_KEY_NAVIGATION
-    , activeNavigationKeys()
-#endif
+    cursorRectIntersectsClipRect(false),
+    activeNavigationKeys()
 {
 }
 
@@ -110,7 +108,8 @@ void QVirtualKeyboardInputContextPrivate::setKeyboardRectangle(QRectF rectangle)
     if (keyboardRect != rectangle) {
         keyboardRect = rectangle;
         emit keyboardRectangleChanged();
-        platformInputContext->emitKeyboardRectChanged();
+        if (platformInputContext)
+            platformInputContext->emitKeyboardRectChanged();
     }
 }
 
@@ -206,7 +205,8 @@ void QVirtualKeyboardInputContextPrivate::registerInputPanel(QObject *inputPanel
 
 void QVirtualKeyboardInputContextPrivate::hideInputPanel()
 {
-    platformInputContext->hideInputPanel();
+    if (platformInputContext)
+        platformInputContext->hideInputPanel();
 }
 
 void QVirtualKeyboardInputContextPrivate::updateAvailableLocales(const QStringList &availableLocales)
@@ -257,7 +257,7 @@ void QVirtualKeyboardInputContextPrivate::forceCursorPosition(int anchorPosition
 bool QVirtualKeyboardInputContextPrivate::contains(const QPointF &point) const
 {
     bool hit = false;
-    if (dimmer) {
+    if (dimmer && platformInputContext->isInputPanelVisible()) {
         const auto scenePoint = dimmer->mapToScene(point);
         if (keyboardRectangle().contains(scenePoint)) {
             hit = true;
@@ -381,6 +381,8 @@ void QVirtualKeyboardInputContextPrivate::sendPreedit(const QString &text, const
 
 void QVirtualKeyboardInputContextPrivate::sendInputMethodEvent(QInputMethodEvent *event)
 {
+    if (!platformInputContext)
+        return;
     QVirtualKeyboardScopedState inputMethodEventState(this, State::InputMethodEvent);
     platformInputContext->sendEvent(event);
 }
@@ -401,6 +403,9 @@ void QVirtualKeyboardInputContextPrivate::update(Qt::InputMethodQueries queries)
 
     // No need to fetch input clip rectangle during animation
     if (!(queries & ~Qt::ImInputItemClipRectangle) && animating)
+        return;
+
+    if (!platformInputContext)
         return;
 
     // fetch
@@ -598,19 +603,19 @@ bool QVirtualKeyboardInputContextPrivate::filterEvent(const QEvent *event)
         else
             setState(State::KeyEvent);
 
-#ifdef QT_VIRTUALKEYBOARD_ARROW_KEY_NAVIGATION
-        if ((key >= Qt::Key_Left && key <= Qt::Key_Down) || key == Qt::Key_Return) {
-            if (type == QEvent::KeyPress && platformInputContext->isInputPanelVisible()) {
-                activeNavigationKeys += key;
-                emit navigationKeyPressed(key, keyEvent->isAutoRepeat());
-                return true;
-            } else if (type == QEvent::KeyRelease && activeNavigationKeys.contains(key)) {
-                activeNavigationKeys -= key;
-                emit navigationKeyReleased(key, keyEvent->isAutoRepeat());
-                return true;
+        if (Settings::instance()->arrowKeyNavigationEnabled()) {
+            if ((key >= Qt::Key_Left && key <= Qt::Key_Down) || key == Qt::Key_Return) {
+                if (type == QEvent::KeyPress && platformInputContext->isInputPanelVisible()) {
+                    activeNavigationKeys += key;
+                    emit navigationKeyPressed(key, keyEvent->isAutoRepeat());
+                    return true;
+                } else if (type == QEvent::KeyRelease && activeNavigationKeys.contains(key)) {
+                    activeNavigationKeys -= key;
+                    emit navigationKeyReleased(key, keyEvent->isAutoRepeat());
+                    return true;
+                }
             }
         }
-#endif
 
         if (type == QEvent::KeyRelease && (key == Qt::Key_Return || key == Qt::Key_Enter)) {
             maybeCloseOnReturn();
@@ -627,15 +632,14 @@ bool QVirtualKeyboardInputContextPrivate::filterEvent(const QEvent *event)
                 commit();
             }
         }
+    } else if (type == QEvent::ShortcutOverride) {
+        if (Settings::instance()->arrowKeyNavigationEnabled()) {
+            const QKeyEvent *keyEvent = static_cast<const QKeyEvent *>(event);
+            int key = keyEvent->key();
+            if ((key >= Qt::Key_Left && key <= Qt::Key_Down) || key == Qt::Key_Return)
+                return true;
+        }
     }
-#ifdef QT_VIRTUALKEYBOARD_ARROW_KEY_NAVIGATION
-    else if (type == QEvent::ShortcutOverride) {
-        const QKeyEvent *keyEvent = static_cast<const QKeyEvent *>(event);
-        int key = keyEvent->key();
-        if ((key >= Qt::Key_Left && key <= Qt::Key_Down) || key == Qt::Key_Return)
-            return true;
-    }
-#endif
 
     return false;
 }
@@ -691,18 +695,6 @@ void QVirtualKeyboardInputContextPrivate::updateSelectionControlVisible(bool inp
         selectionControlVisible = newSelectionControlVisible;
         emit q->selectionControlVisibleChanged();
     }
-}
-
-QVirtualKeyboardInputContext *QVirtualKeyboardInputContextForeign::create(
-        QQmlEngine *qmlEngine, QJSEngine *)
-{
-    static QMutex mutex;
-    static QHash<QQmlEngine *, QVirtualKeyboardInputContext *> instances;
-    QMutexLocker locker(&mutex);
-    QVirtualKeyboardInputContext *&instance = instances[qmlEngine];
-    if (instance == nullptr)
-        instance = new QVirtualKeyboardInputContext(qmlEngine);
-    return instance;
 }
 
 QT_END_NAMESPACE

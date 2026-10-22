@@ -1,7 +1,8 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
-#include "pinyindecoderservice_p.h"
+#include "pinyindecoderservice.h"
 #include "pinyinime.h"
 #include "dictdef.h"
 #include <QStandardPaths>
@@ -175,7 +176,7 @@ QList<QString> PinyinDecoderService::fetchCandidates(int index, int count, int s
     return candidatesList;
 }
 
-int PinyinDecoderService::chooceCandidate(int index)
+int PinyinDecoderService::chooseCandidate(int index)
 {
     return int(im_choose(index));
 }

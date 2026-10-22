@@ -12,9 +12,9 @@ qt_internal_add_qml_module(qtvkbthaiplugin
     PLUGIN_TARGET qtvkbthaiplugin
     NO_PLUGIN_OPTIONAL
     DEPENDENCIES
-        QtQuick.VirtualKeyboard/auto
+        QtQuick.VirtualKeyboard.Core/auto
     SOURCES
-        thaiinputmethod.cpp thaiinputmethod_p.h
+        thaiinputmethod.cpp thaiinputmethod.h
     DEFINES
         QT_ASCII_CAST_WARNINGS
         QT_NO_CAST_FROM_ASCII

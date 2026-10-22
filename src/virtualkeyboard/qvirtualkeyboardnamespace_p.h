@@ -1,5 +1,6 @@
 // Copyright (C) 2023 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #ifndef QVIRTUALKEYBOARDNAMESPACE_P_H
 #define QVIRTUALKEYBOARDNAMESPACE_P_H
@@ -23,7 +24,7 @@ QT_BEGIN_NAMESPACE
 
 namespace QtVirtualKeyboard {
 
-Q_VIRTUALKEYBOARD_EXPORT Q_NAMESPACE
+Q_NAMESPACE_EXPORT(Q_VIRTUALKEYBOARD_EXPORT)
 QML_NAMED_ELEMENT(QtVirtualKeyboard)
 QML_ADDED_IN_VERSION(6, 4)
 

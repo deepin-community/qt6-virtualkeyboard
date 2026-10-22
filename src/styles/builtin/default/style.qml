@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 import QtQuick
-import QtQuick.Layouts
 import QtQuick.VirtualKeyboard
 import QtQuick.VirtualKeyboard.Styles
 
@@ -1029,7 +1028,7 @@ KeyboardStyle {
             font {
                 family: fontFamily
                 weight: Font.Normal
-                pixelSize: Qt.inputMethod.cursorRectangle.height * 0.8
+                pixelSize: InputMethod.cursorRectangle.height * 0.8
             }
             function decorateText(text, wordCompletionLength) {
                 if (wordCompletionLength > 0) {
@@ -1147,25 +1146,32 @@ KeyboardStyle {
         source: resourcePrefix + "images/selectionhandle-bottom.svg"
     }
 
-    fullScreenInputContainerBackground: Rectangle {
-        color: "#FFF"
+    fullScreenInputContainerBackground: Item {
+        clip: true
+        Rectangle {
+            y: border.width
+            color: selectionListBackgroundColor
+            width: parent.width
+            height: parent.height
+        }
     }
 
-    fullScreenInputBackground: Rectangle {
-        color: "#FFF"
+    fullScreenInputBackground: Item {
     }
 
-    fullScreenInputMargins: Math.round(15 * scaleHint)
+    fullScreenInputMargins: Math.round(30 * scaleHint)
 
-    fullScreenInputPadding: Math.round(30 * scaleHint)
+    fullScreenInputPadding: 0
 
     fullScreenInputCursor: Rectangle {
         width: 1
-        color: "#000"
+        color: selectionListTextColor
         visible: parent.blinkStatus
     }
 
-    fullScreenInputFont.pixelSize: 58 * scaleHint
+    fullScreenInputColor: selectionListTextColor
+
+    fullScreenInputFont.pixelSize: 44 * scaleHint
 
     functionPopupListDelegate: Item {
         id: functionPopupListItem
